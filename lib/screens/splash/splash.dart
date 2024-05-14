@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
+import 'package:media_doctor/blocs/bloc/auth_bloc.dart';
 import 'package:media_doctor/screens/authentication/login/login.dart';
+import 'package:media_doctor/screens/bottomnav/botttomnav.dart';
 import 'package:page_transition/page_transition.dart';
 
 class SplashScreen extends StatelessWidget {
@@ -9,13 +12,23 @@ class SplashScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-        MediaQueryData mediaQuery = MediaQuery.of(context);
-    return  Scaffold(
+    MediaQueryData mediaQuery = MediaQuery.of(context);
+    return BlocListener<AuthBloc, AuthState>(
+      listener: (context, state) {
+        if (state is Authenticated) {
+          Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => BottomNav()));
+        }else if( state is Unauthenticated){
+          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=>LoginPage())); 
+        }
+      },
+      child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(),
         body: InkWell(
-          onTap: (){
-        Navigator.of(context).pushReplacement(PageTransition(child: LoginPage(), type: PageTransitionType.fade));
+          onTap: () {
+            Navigator.of(context).pushReplacement(PageTransition(
+                child: LoginPage(), type: PageTransitionType.fade));
           },
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -33,8 +46,8 @@ class SplashScreen extends StatelessWidget {
                   Text(
                     'Medica',
                     style: GoogleFonts.signika(
-                        textStyle:
-                            TextStyle(fontWeight: FontWeight.bold, fontSize: 35)),
+                        textStyle: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 35)),
                   )
                 ],
               ),
@@ -46,6 +59,7 @@ class SplashScreen extends StatelessWidget {
             ],
           ),
         ),
-      );
+      ),
+    );
   }
 }
