@@ -14,5 +14,5 @@ class Colormanager {
   static const Color othericons = Color.fromARGB(255, 208, 208, 208);
 
   static const Color scaffold = Color.fromARGB(255, 233, 233, 233);
-  static const Color blueicon = Color.fromARGB(255, 0, 85, 232);
+  static const Color blueicon = Color.fromARGB(255, 89, 0, 255);
 }

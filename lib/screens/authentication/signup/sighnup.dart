@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:media_doctor/blocs/bloc/auth_bloc.dart';
+import 'package:media_doctor/blocs/Obascure/obscure_bloc.dart';
+import 'package:media_doctor/blocs/auth/auth_bloc.dart';
 import 'package:media_doctor/models/user_model.dart';
 import 'package:media_doctor/screens/authentication/login/login.dart';
-import 'package:media_doctor/screens/bottomnav/botttomnav.dart';
+import 'package:media_doctor/screens/bottomnav/home.dart';
 import 'package:media_doctor/utils/colors/colormanager.dart';
 import 'package:media_doctor/widgets/textformfield/textformfield.dart';
 
@@ -29,7 +30,7 @@ class SignUp extends StatelessWidget {
         if (state is Authenticated) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (context) => BottomNav()));
+                MaterialPageRoute(builder: (context) => Bottomnav()));
           });
         }
         return Scaffold(
@@ -113,26 +114,48 @@ class SignUp extends StatelessWidget {
 
                     //password
 
-                    CustomTextFormField(
-                      value: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Enter your password ';
-                        }
-                        return null;
+                    
+                      BlocBuilder<ObscureBloc, ObscureState>(
+                      builder: (context, state) {
+                        final st = BlocProvider.of<ObscureBloc>(context).state;
+
+                        return CustomTextFormField(
+                          obscuretext: st is Obscurtrue?false:true,
+
+                          // ignore: body_might_complete_normally_nullable
+                          value: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Enter your password';
+                            }
+                          },
+                          controller: _passwordController,
+                          suficon: InkWell(
+                            onTap: () {
+                              if (st is Obscurtrue) {
+                                BlocProvider.of<ObscureBloc>(context)
+                                    .add(ObscureCLick(obscure: false));
+                              } else {
+                                BlocProvider.of<ObscureBloc>(context)
+                                    .add(ObscureCLick(obscure: true));
+                              }
+                            },
+                            child: st is Obscurtrue
+                                ? Icon(Icons.visibility)
+                                : Icon(Icons.visibility_off),
+                          ),
+
+
+                          
+                          Textcolor: Colormanager.grayText,
+                          fonrmtype: 'Enter password',
+                          formColor: Colormanager.whiteContainer,
+                          icons: const Icon(
+                            FontAwesomeIcons.lock,
+                            size: 20,
+                            color: Colormanager.iconscolor,
+                          ),
+                        );
                       },
-                      controller: _passwordController,
-                      Textcolor: Colormanager.grayText,
-                      fonrmtype: 'Enter password',
-                      formColor: Colormanager.whiteContainer,
-                      icons: Icon(
-                        FontAwesomeIcons.lock,
-                        size: 20,
-                        color: Colormanager.iconscolor,
-                      ),
-                      suficon: Icon(
-                        Icons.remove_red_eye,
-                        color: Colormanager.blackIcon,
-                      ),
                     ),
 
                     SizedBox(
@@ -149,7 +172,7 @@ class SignUp extends StatelessWidget {
                           password: _passwordController.text,
                         );
                         BlocProvider.of<AuthBloc>(context)
-                            .add(SighnupEvent(user: user));
+                            .add(SignupEvent(user: user));
                       },
                       child: Padding(
                         padding: const EdgeInsets.only(left: 20, right: 20),

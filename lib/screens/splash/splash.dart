@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
-import 'package:media_doctor/blocs/bloc/auth_bloc.dart';
+import 'package:media_doctor/blocs/auth/auth_bloc.dart';
 import 'package:media_doctor/screens/authentication/login/login.dart';
-import 'package:media_doctor/screens/bottomnav/botttomnav.dart';
+import 'package:media_doctor/screens/bottomnav/home.dart';
 import 'package:page_transition/page_transition.dart';
 
 class SplashScreen extends StatelessWidget {
@@ -17,8 +17,8 @@ class SplashScreen extends StatelessWidget {
       listener: (context, state) {
         if (state is Authenticated) {
           Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (context) => BottomNav()));
-        }else if( state is Unauthenticated){
+              MaterialPageRoute(builder: (context) => Bottomnav()));
+        }else if( state is UnAuthenticated){
           Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=>LoginPage())); 
         }
       },
