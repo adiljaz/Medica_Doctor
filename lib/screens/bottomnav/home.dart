@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconly/iconly.dart';
+import 'package:media_doctor/blocs/auth/auth_bloc.dart';
 import 'package:media_doctor/blocs/bottomnav/landing_state_bloc.dart';
+import 'package:media_doctor/screens/adprofiledata/addrofile.dart';
+import 'package:media_doctor/screens/authentication/login/login.dart';
 import 'package:media_doctor/utils/colors/colormanager.dart';
 
 class Bottomnav extends StatelessWidget {
@@ -13,8 +16,10 @@ class Bottomnav extends StatelessWidget {
       Text('oneeeeeeeee'),
       Text('Twooooooooooooooooo'),
       Text('threeeeeeeeeeeeeeeeeeeee'),
+
       Text('threeeeeeeeeeeeeeeeeeeee'),
-      Text('threeeeeeeeeeeeeeeeeeeee'),
+
+      AddProfile(),
 
       //  Profile(),
     ];
@@ -23,6 +28,18 @@ class Bottomnav extends StatelessWidget {
       child: BlocBuilder<LandingStateBloc, LandingStateState>(
         builder: (context, state) {
           return Scaffold(
+            appBar: AppBar(
+              leading: IconButton(
+                  onPressed: () {
+                    final authBloc = BlocProvider.of<AuthBloc>(context);
+                    authBloc.add(LogoutEvent());
+
+                    Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(builder: (context) => LoginPage()),
+                        (route) => false);
+                  },
+                  icon: Icon(Icons.logout)),
+            ),
             backgroundColor: Colormanager.scaffold,
             // appBar: AppBar(
             //   actions: [

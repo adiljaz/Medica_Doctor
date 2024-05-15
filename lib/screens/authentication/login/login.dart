@@ -4,9 +4,11 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:media_doctor/blocs/Obascure/obscure_bloc.dart';
 import 'package:media_doctor/blocs/auth/auth_bloc.dart';
+import 'package:media_doctor/screens/adprofiledata/addrofile.dart';
 import 'package:media_doctor/screens/authentication/forgotPassword/forgotPassword.dart';
 import 'package:media_doctor/screens/authentication/signup/sighnup.dart';
 import 'package:media_doctor/screens/bottomnav/home.dart';
+
 import 'package:media_doctor/utils/colors/colormanager.dart';
 import 'package:media_doctor/widgets/signin/signing.dart';
 import 'package:media_doctor/widgets/textformfield/textformfield.dart';
@@ -29,7 +31,7 @@ class LoginPage extends StatelessWidget {
           FocusScope.of(context).unfocus();
           WidgetsBinding.instance.addPostFrameCallback((_) {
             Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(builder: (_) => Bottomnav()),
+                MaterialPageRoute(builder: (_) => AddProfile()),
                 (route) => false);
           });
         }

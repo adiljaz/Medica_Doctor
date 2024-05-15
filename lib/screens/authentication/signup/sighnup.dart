@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:media_doctor/blocs/Obascure/obscure_bloc.dart';
 import 'package:media_doctor/blocs/auth/auth_bloc.dart';
 import 'package:media_doctor/models/user_model.dart';
+import 'package:media_doctor/screens/adprofiledata/addrofile.dart';
 import 'package:media_doctor/screens/authentication/login/login.dart';
 import 'package:media_doctor/screens/bottomnav/home.dart';
 import 'package:media_doctor/utils/colors/colormanager.dart';
@@ -30,7 +31,7 @@ class SignUp extends StatelessWidget {
         if (state is Authenticated) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (context) => Bottomnav()));
+                MaterialPageRoute(builder: (context) => AddProfile()));
           });
         }
         return Scaffold(
