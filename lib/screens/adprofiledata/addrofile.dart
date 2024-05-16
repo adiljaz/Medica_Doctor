@@ -275,39 +275,62 @@ class _AddProfileState extends State<AddProfile> {
                                   children: [
                                     BlocBuilder<WeekBloc, WeekState>(
                                       builder: (context, state) {
-                                        final st =
-                                            BlocProvider.of<WeekBloc>(context)
-                                                .state;
                                         return GestureDetector(
                                           onTap: () {
                                             final st =
                                                 BlocProvider.of<WeekBloc>(
                                                         context)
                                                     .state;
-
+                                            print(st);
                                             if (st is Sundaychange) {
-                                              BlocProvider.of<WeekBloc>(
-                                                      context)
-                                                  .add(SundayClick (
+                                              
+                                              BlocProvider.of<WeekBloc>(context)
+                                                  .add(SundayClick(
                                                       sunday: false));
+
+                                              print('sunday if');
                                             } else {
-                                              BlocProvider.of<WeekBloc>(
-                                                      context)
-                                                  .add(SundayClick (
+                                              BlocProvider.of<WeekBloc>(context)
+                                                  .add(SundayClick(
                                                       sunday: true));
+                                              print('sunday else');
                                             }
                                           },
                                           child: Weeklydays(
-                                            color: state is  Sundaychange
-                                                ?Colormanager.blueContainer:Colormanager.whiteContainer, 
+                                            color: state is Sundaychange ? Colormanager.blueContainer
+                                                : Colormanager.whiteContainer,
                                             day: 'Su',
                                           ),
                                         );
                                       },
                                     ),
-                                    Weeklydays(
-                                      color: Colormanager.blueContainer,
-                                      day: 'Mo',
+                                    BlocBuilder<WeekBloc, WeekState>(
+                                      builder: (context, state) {
+                                        return GestureDetector(
+                                          onTap: () {
+                                            final st =
+                                                BlocProvider.of<WeekBloc>(context).state;
+                                              
+
+                                            if (st is Mondychange) {
+                                              print('monday if');
+                                              BlocProvider.of<WeekBloc>(context)
+                                                  .add(MondayClick(
+                                                      monday: false));
+                                            } else {
+                                              print('monday else');
+                                              BlocProvider.of<WeekBloc>(context)
+                                                  .add(MondayClick(
+                                                      monday: true));
+                                            }
+                                          },
+                                          child: Weeklydays(
+                                            color: state is Mondychange? Colormanager.blueContainer
+                                                : Colormanager.whiteContainer,
+                                            day: 'Mo',
+                                          ),
+                                        );
+                                      },
                                     ),
                                     Weeklydays(
                                       color: Colormanager.blueContainer,

@@ -17,7 +17,7 @@ class Weeklydays extends StatelessWidget {
         day,
         style: GoogleFonts.poppins(
             textStyle: TextStyle(
-                fontWeight: FontWeight.w600, color: Colormanager.scaffold)),
+                fontWeight: FontWeight.w600, color: Color.fromARGB(255, 190, 190, 190))),
       ),
     );
   }
