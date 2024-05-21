@@ -1,18 +1,25 @@
+import 'package:day_night_time_picker/day_night_time_picker.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:media_doctor/blocs/profile/AddUser/add_user_bloc.dart';
 import 'package:media_doctor/blocs/profile/ImageAdding/image_adding_bloc.dart';
 import 'package:media_doctor/blocs/profile/docimg/docimg_bloc.dart';
-import 'package:media_doctor/blocs/week/week_bloc.dart';
+import 'package:media_doctor/screens/adprofiledata/widgets/dob.dart';
+import 'package:media_doctor/screens/adprofiledata/widgets/dropdown.dart';
+import 'package:media_doctor/screens/adprofiledata/widgets/time.dart';
+
 import 'package:media_doctor/screens/bottomnav/home.dart';
 import 'package:media_doctor/screens/profile/widget/certificates/docimage.dart';
 import 'package:media_doctor/screens/profile/widget/userimage.dart';
 import 'package:media_doctor/utils/colors/colormanager.dart';
 import 'package:media_doctor/widgets/profiletexfield/profiletetfield.dart';
-import 'package:media_doctor/widgets/week/week.dart';
+
+import 'package:weekday_selector/weekday_selector.dart';
 
 // ignore: must_be_immutable
 class AddProfile extends StatefulWidget {
@@ -34,10 +41,43 @@ class _AddProfileState extends State<AddProfile> {
   final TextEditingController _locationcontroler = TextEditingController();
 
   final TextEditingController _mbobilecontroller = TextEditingController();
+  final TextEditingController _fromController = TextEditingController();
+  final TextEditingController _toController = TextEditingController();
+  final TextEditingController _yearofexpeianceController =
+      TextEditingController();
+
+  final TextEditingController _aboutnameController = TextEditingController();
+
+  final TextEditingController _hospitalnameController = TextEditingController();
 
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
 
   String imageUrl = '';
+
+  final values = List.filled(7, true);
+
+  final List<String> genderItems = [
+    'Male',
+    'Female',
+  ];
+
+  final List<String> departments = [
+    'Cardiologists',
+    'Dentist',
+    'Neurologists',
+    'General',
+    'Pediatrics',
+    ' nutritionist',
+    'ophthalmologist  ',
+    'Radiologist',
+    'Urologist',
+  ];
+
+  FocusNode myFocusNode = FocusNode();
+  String? selectedValue;
+
+  TimeOfDay fromtime = TimeOfDay.now();
+  TimeOfDay totime = TimeOfDay.now();
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +86,7 @@ class _AddProfileState extends State<AddProfile> {
       backgroundColor: Colormanager.scaffold,
       appBar: AppBar(
         backgroundColor: Colormanager.scaffold,
-        title: const Text(
+        title: Text(
           'Add Profile',
           style: TextStyle(),
         ),
@@ -128,6 +168,7 @@ class _AddProfileState extends State<AddProfile> {
 
                                 return null;
                               }),
+
                           SizedBox(
                             height: mediaquery.size.height * 0.02,
                           ),
@@ -147,35 +188,44 @@ class _AddProfileState extends State<AddProfile> {
                           SizedBox(
                             height: mediaquery.size.height * 0.02,
                           ),
-                          ProfileTextFormField(
-                              keyboardtype: TextInputType.number,
-                              fonrmtype: 'Date of Birth',
-                              formColor: Colormanager.whiteContainer,
-                              textcolor: Colormanager.grayText,
-                              controller: _datofbirthController,
-                              value: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Add Date of Birth ';
-                                }
 
-                                return null;
-                              }),
+                          Container(
+                            height: mediaquery.size.height * 0.07,
+                            child: DateofBirth(
+                                value: (value) {},
+                                controller: _datofbirthController,
+                                labeltext: 'Date of birth',
+                                onTap: () {
+                                  _selectDAte();
+                                  FocusScope.of(context)
+                                      .requestFocus(myFocusNode);
+                                }),
+                          ),
+
                           SizedBox(
                             height: mediaquery.size.height * 0.02,
                           ),
-                          ProfileTextFormField(
-                              keyboardtype: TextInputType.text,
-                              fonrmtype: 'Gender ',
-                              formColor: Colormanager.whiteContainer,
-                              textcolor: Colormanager.grayText,
-                              controller: _gendercontroller,
-                              value: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Add Gender';
-                                }
 
-                                return null;
-                              }),
+                          Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 20, right: 20),
+                              child: Drobdown(
+                                genderItems: genderItems,
+                                typeText: 'Select Your Gender',
+                              )),
+
+                          SizedBox(
+                            height: mediaquery.size.height * 0.02,
+                          ),
+
+                          Padding(
+                            padding: const EdgeInsets.only(left: 20, right: 20),
+                            child: Drobdown(
+                              genderItems: departments,
+                              typeText: 'Select your Department',
+                            ),
+                          ),
+
                           SizedBox(
                             height: mediaquery.size.height * 0.02,
                           ),
@@ -216,15 +266,11 @@ class _AddProfileState extends State<AddProfile> {
                             height: mediaquery.size.height * 0.02,
                           ),
                           ProfileTextFormField(
-                              keyboardtype: TextInputType.text,
+                              keyboardtype: TextInputType.number,
                               fonrmtype: 'Year of Experiance',
                               formColor: Colormanager.whiteContainer,
                               textcolor: Colormanager.grayText,
-                              controller: _locationcontroler,
-                              suficon: const Icon(
-                                Icons.location_on,
-                                color: Color.fromARGB(255, 211, 14, 0),
-                              ),
+                              controller: _yearofexpeianceController,
                               value: (value) {
                                 if (value == null || value.isEmpty) {
                                   return 'Add Year of Experiance';
@@ -235,23 +281,85 @@ class _AddProfileState extends State<AddProfile> {
                           SizedBox(
                             height: mediaquery.size.height * 0.02,
                           ),
-                          ProfileTextFormField(
-                              keyboardtype: TextInputType.text,
-                              fonrmtype: 'Working time',
-                              formColor: Colormanager.whiteContainer,
-                              textcolor: Colormanager.grayText,
-                              controller: _locationcontroler,
-                              suficon: const Icon(
-                                Icons.location_on,
-                                color: Color.fromARGB(255, 211, 14, 0),
-                              ),
-                              value: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Add Working time';
-                                }
 
-                                return null;
-                              }),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 20, bottom: 5),
+                            child: Text(
+                              'Working Time',
+                              style: GoogleFonts.poppins(
+                                  textStyle:
+                                      TextStyle(fontWeight: FontWeight.w600)),
+                            ),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Container(
+                                  height: mediaquery.size.height * 0.055,
+                                  width: mediaquery.size.width * 0.29,
+                                  child: AvailableTime(
+                                      onTap: () async {
+                                        final TimeOfDay? timeOfDay =
+                                            await showTimePicker(
+                                          context: context,
+                                          initialTime: fromtime,
+                                          initialEntryMode:
+                                              TimePickerEntryMode.input,
+                                        );
+
+                                        if (timeOfDay != null) {
+                                          setState(() {
+                                            fromtime = timeOfDay;
+                                          });
+                                        }
+                                        FocusScope.of(context)
+                                            .requestFocus(myFocusNode);
+                                      },
+                                      controller: _fromController,
+                                      value: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return 'Add time';
+                                        }
+
+                                        return null;
+                                      },
+                                      labeltext:
+                                          '${fromtime.hour % 12}:${fromtime.minute}')),
+                              Container(
+                                  height: mediaquery.size.height * 0.055,
+                                  width: mediaquery.size.width * 0.29,
+                                  child: AvailableTime(
+                                    onTap: () async {
+                                      final TimeOfDay? timeOfDay =
+                                          await showTimePicker(
+                                        context: context,
+                                        initialTime: totime,
+                                        initialEntryMode:
+                                            TimePickerEntryMode.input,
+                                      );
+
+                                      if (timeOfDay != null) {
+                                        setState(() {
+                                          totime = timeOfDay;
+                                        });
+                                      }
+                                      FocusScope.of(context)
+                                          .requestFocus(myFocusNode);
+                                    },
+                                    controller: _toController,
+                                    value: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'Add time';
+                                      }
+
+                                      return null;
+                                    },
+                                    labeltext:
+                                        '${totime.hour % 12}:${totime.minute}',
+                                  )),
+                            ],
+                          ),
+
                           SizedBox(
                             height: mediaquery.size.height * 0.02,
                           ),
@@ -266,101 +374,54 @@ class _AddProfileState extends State<AddProfile> {
                           ///
 
                           Padding(
-                            padding: const EdgeInsets.only(left: 15, right: 15),
-                            child: Container(
-                                height: mediaquery.size.height * 0.08,
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    BlocBuilder<WeekBloc, WeekState>(
-                                      builder: (context, state) {
-                                        return GestureDetector(
-                                          onTap: () {
-                                            final st =
-                                                BlocProvider.of<WeekBloc>(
-                                                        context)
-                                                    .state;
-                                            print(st);
-                                            if (st is Sundaychange) {
-                                              
-                                              BlocProvider.of<WeekBloc>(context)
-                                                  .add(SundayClick(
-                                                      sunday: false));
-
-                                              print('sunday if');
-                                            } else {
-                                              BlocProvider.of<WeekBloc>(context)
-                                                  .add(SundayClick(
-                                                      sunday: true));
-                                              print('sunday else');
-                                            }
-                                          },
-                                          child: Weeklydays(
-                                            color: state is Sundaychange ? Colormanager.blueContainer
-                                                : Colormanager.whiteContainer,
-                                            day: 'Su',
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                    BlocBuilder<WeekBloc, WeekState>(
-                                      builder: (context, state) {
-                                        return GestureDetector(
-                                          onTap: () {
-                                            final st =
-                                                BlocProvider.of<WeekBloc>(context).state;
-                                              
-
-                                            if (st is Mondychange) {
-                                              print('monday if');
-                                              BlocProvider.of<WeekBloc>(context)
-                                                  .add(MondayClick(
-                                                      monday: false));
-                                            } else {
-                                              print('monday else');
-                                              BlocProvider.of<WeekBloc>(context)
-                                                  .add(MondayClick(
-                                                      monday: true));
-                                            }
-                                          },
-                                          child: Weeklydays(
-                                            color: state is Mondychange? Colormanager.blueContainer
-                                                : Colormanager.whiteContainer,
-                                            day: 'Mo',
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                    Weeklydays(
-                                      color: Colormanager.blueContainer,
-                                      day: 'Tu',
-                                    ),
-                                    Weeklydays(
-                                      color: Colormanager.blueContainer,
-                                      day: 'We',
-                                    ),
-                                    Weeklydays(
-                                      color: Colormanager.blueContainer,
-                                      day: 'Th',
-                                    ),
-                                    Weeklydays(
-                                      color: Colormanager.blueContainer,
-                                      day: 'Fr',
-                                    ),
-                                    Weeklydays(
-                                      color: Colormanager.blueContainer,
-                                      day: 'Sa',
-                                    ),
-                                  ],
-                                )),
+                            padding: const EdgeInsets.only(left: 17, right: 17),
+                            child: WeekdaySelector(
+                              selectedTextStyle: TextStyle(
+                                  fontWeight: FontWeight.bold, inherit: false),
+                              shortWeekdays: const [
+                                'Sun',
+                                'Mon',
+                                'Tue',
+                                'Wed',
+                                'Thu',
+                                'Fri',
+                                'Sat',
+                              ],
+                              firstDayOfWeek: 7,
+                              onChanged: (int day) {
+                                setState(() {
+                                  final index = day % 7;
+                                  values[index] = !values[index];
+                                  print(values);
+                                });
+                              },
+                              values: values,
+                            ),
                           ),
 
                           SizedBox(
                             height: mediaquery.size.height * 0.02,
                           ),
+
                           ProfileTextFormField(
-                              keyboardtype: TextInputType.text,
+                              keyboardtype: TextInputType.name,
+                              fonrmtype: ' Hospital Name ',
+                              formColor: Colormanager.whiteContainer,
+                              textcolor: Colormanager.grayText,
+                              controller: _hospitalnameController,
+                              value: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Add Hospital name';
+                                }
+
+                                return null;
+                              }),
+
+                          SizedBox(
+                            height: mediaquery.size.height * 0.02,
+                          ),
+                          ProfileTextFormField(
+                              keyboardtype: TextInputType.number,
                               fonrmtype: 'consultation fees',
                               formColor: Colormanager.whiteContainer,
                               textcolor: Colormanager.grayText,
@@ -376,6 +437,27 @@ class _AddProfileState extends State<AddProfile> {
 
                                 return null;
                               }),
+
+                          SizedBox(
+                            height: mediaquery.size.height * 0.02,
+                          ),
+
+                          ProfileTextFormField(
+                              minline: 10,
+                              maxline: 1,
+                              keyboardtype: TextInputType.name,
+                              fonrmtype: ' About',
+                              formColor: Colormanager.whiteContainer,
+                              textcolor: Colormanager.grayText,
+                              controller: _aboutnameController,
+                              value: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Add About';
+                                }
+
+                                return null;
+                              }),
+
                           SizedBox(
                             height: mediaquery.size.height * 0.02,
                           ),
@@ -397,6 +479,7 @@ class _AddProfileState extends State<AddProfile> {
                           SizedBox(
                             height: mediaquery.size.height * 0.02,
                           ),
+
                           GestureDetector(
                             onTap: () {
                               if (imageUrl.isEmpty) {
@@ -480,5 +563,18 @@ class _AddProfileState extends State<AddProfile> {
     _gendercontroller.clear();
     _locationcontroler.clear();
     imageUrl = '';
+  }
+
+  Future<void> _selectDAte() async {
+    DateTime? _picked = await showDatePicker(
+        initialDate: DateTime.now(),
+        context: context,
+        firstDate: DateTime(2000),
+        lastDate: DateTime(2100));
+    if (_picked != null) {
+      setState(() {
+        _datofbirthController.text = _picked.toString().split(" ")[0];
+      });
+    }
   }
 }

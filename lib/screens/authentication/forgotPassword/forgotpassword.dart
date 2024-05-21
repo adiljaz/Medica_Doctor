@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:media_doctor/blocs/Forgot/forgot_password_bloc.dart';
 import 'package:media_doctor/utils/colors/colormanager.dart';
 import 'package:media_doctor/widgets/textformfield/textformfield.dart';
+import 'package:media_doctor/widgets/week/week.dart';
 
 class ForgotPassword extends StatelessWidget {
   ForgotPassword({super.key});
@@ -128,6 +129,8 @@ class ForgotPassword extends StatelessWidget {
                     SizedBox(
                       height: mediaQuery.size.height * 0.03,
                     )
+
+                
                   ],
                 ),
               ),
