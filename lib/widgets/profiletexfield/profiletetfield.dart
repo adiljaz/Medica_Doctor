@@ -22,7 +22,7 @@ class ProfileTextFormField extends StatelessWidget {
   final String fonrmtype;
   final Color formColor;
   final Icon? icons;
-  final Icon? suficon;
+  final Widget? suficon;
   final Color textcolor;
   final int? minline;
   final int? maxline;

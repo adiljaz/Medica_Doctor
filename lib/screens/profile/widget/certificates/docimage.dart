@@ -35,6 +35,8 @@ class _UserimageState extends State<Docimage> {
         return Column(
           children: [
             if (imageUrl == null)
+     
+
               Center(
                   child: GestureDetector(
                 onTap: () => _selectPhoto(),

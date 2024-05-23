@@ -1,18 +1,18 @@
-import 'package:day_night_time_picker/day_night_time_picker.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:media_doctor/blocs/bloc/location_bloc.dart';
+import 'package:media_doctor/blocs/bloc/location_event.dart';
+import 'package:media_doctor/blocs/bloc/location_state.dart';
 import 'package:media_doctor/blocs/profile/AddUser/add_user_bloc.dart';
 import 'package:media_doctor/blocs/profile/ImageAdding/image_adding_bloc.dart';
 import 'package:media_doctor/blocs/profile/docimg/docimg_bloc.dart';
 import 'package:media_doctor/screens/adprofiledata/widgets/dob.dart';
 import 'package:media_doctor/screens/adprofiledata/widgets/dropdown.dart';
 import 'package:media_doctor/screens/adprofiledata/widgets/time.dart';
-
 import 'package:media_doctor/screens/bottomnav/home.dart';
 import 'package:media_doctor/screens/profile/widget/certificates/docimage.dart';
 import 'package:media_doctor/screens/profile/widget/userimage.dart';
@@ -49,12 +49,18 @@ class _AddProfileState extends State<AddProfile> {
   final TextEditingController _aboutnameController = TextEditingController();
 
   final TextEditingController _hospitalnameController = TextEditingController();
+  final TextEditingController _feescontroller = TextEditingController();
+  
 
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
 
   String imageUrl = '';
+  String docImageUrl = '';
 
   final values = List.filled(7, true);
+
+  String? genderselectedvalue;
+  String? departmenetselectedvalue;
 
   final List<String> genderItems = [
     'Male',
@@ -73,8 +79,8 @@ class _AddProfileState extends State<AddProfile> {
     'Urologist',
   ];
 
+  List<bool>? availabledays;
   FocusNode myFocusNode = FocusNode();
-  String? selectedValue;
 
   TimeOfDay fromtime = TimeOfDay.now();
   TimeOfDay totime = TimeOfDay.now();
@@ -95,7 +101,7 @@ class _AddProfileState extends State<AddProfile> {
       body: BlocBuilder<DocimgBloc, DocimgState>(
         builder: (context, state) {
           if (state is DocSelectedState) {
-            imageUrl = state.imageUrl;
+            docImageUrl = state.docimageUrl;
           }
           return BlocBuilder<ImageAddingBloc, ImageAddingState>(
             builder: (context, state) {
@@ -192,11 +198,17 @@ class _AddProfileState extends State<AddProfile> {
                           Container(
                             height: mediaquery.size.height * 0.07,
                             child: DateofBirth(
-                                value: (value) {},
+                                value: (value) {
+                                  if (value!.isEmpty) {
+                                    return 'Add Date of Birth';
+                                  }
+                                  return null;
+                                },
                                 controller: _datofbirthController,
                                 labeltext: 'Date of birth',
                                 onTap: () {
-                                  _selectDAte();
+                                  _selectDate();
+
                                   FocusScope.of(context)
                                       .requestFocus(myFocusNode);
                                 }),
@@ -210,6 +222,13 @@ class _AddProfileState extends State<AddProfile> {
                               padding:
                                   const EdgeInsets.only(left: 20, right: 20),
                               child: Drobdown(
+                                onChange: (value) {
+                                  setState(() {
+                                    genderselectedvalue = value;
+                                  });
+
+                                  print(genderselectedvalue);
+                                },
                                 genderItems: genderItems,
                                 typeText: 'Select Your Gender',
                               )),
@@ -217,10 +236,16 @@ class _AddProfileState extends State<AddProfile> {
                           SizedBox(
                             height: mediaquery.size.height * 0.02,
                           ),
-
                           Padding(
                             padding: const EdgeInsets.only(left: 20, right: 20),
                             child: Drobdown(
+                              onChange: (value) {
+                                setState(() {
+                                  departmenetselectedvalue = value;
+                                });
+
+                                print(departmenetselectedvalue);
+                              },
                               genderItems: departments,
                               typeText: 'Select your Department',
                             ),
@@ -245,23 +270,71 @@ class _AddProfileState extends State<AddProfile> {
                           SizedBox(
                             height: mediaquery.size.height * 0.02,
                           ),
-                          ProfileTextFormField(
-                              keyboardtype: TextInputType.text,
-                              fonrmtype: 'Location',
-                              formColor: Colormanager.whiteContainer,
-                              textcolor: Colormanager.grayText,
-                              controller: _locationcontroler,
-                              suficon: const Icon(
-                                Icons.location_on,
-                                color: Color.fromARGB(255, 211, 14, 0),
-                              ),
-                              value: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Add Location';
-                                }
+                          BlocBuilder<LocationBlocBloc, LocationBlocState>(
+                            builder: (context, state) {
+                              if (state is LocationLoading) {
+                                return Center(
+                                    child: CircularProgressIndicator());
+                              }
 
-                                return null;
-                              }),
+                              if (state is LocationLoaded) {
+                                _locationcontroler.text = state.address;
+
+                                return ProfileTextFormField(
+                                    keyboardtype: TextInputType.text,
+                                    fonrmtype: 'Location',
+                                    formColor: Colormanager.whiteContainer,
+                                    textcolor: Colormanager.grayText,
+                                    controller: _locationcontroler,
+                                    suficon: GestureDetector(
+                                      onTap: () {
+                                        BlocProvider.of<LocationBlocBloc>(
+                                                context)
+                                            .add(RequestCurrentPosition());
+                                      },
+                                      child: Icon(
+                                        Icons.location_on,
+                                        color: Color.fromARGB(255, 211, 14, 0),
+                                      ),
+                                    ),
+                                    value: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'Add Location';
+                                      }
+
+                                      return null;
+                                    });
+                              } else if (state is LocationError) {
+                                print(state.message);
+                                return Center(child: Text(state.message));
+                              }
+
+                              return ProfileTextFormField(
+                                  keyboardtype: TextInputType.text,
+                                  fonrmtype: 'Location',
+                                  formColor: Colormanager.whiteContainer,
+                                  textcolor: Colormanager.grayText,
+                                  controller: _locationcontroler,
+                                  suficon: GestureDetector(
+                                    onTap: () {
+                                      BlocProvider.of<LocationBlocBloc>(context)
+                                          .add(RequestCurrentPosition());
+                                    },
+                                    child: Icon(
+                                      Icons.location_on,
+                                      color: Color.fromARGB(255, 211, 14, 0),
+                                    ),
+                                  ),
+                                  value: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Add Location';
+                                    }
+
+                                    return null;
+                                  });
+                            },
+                          ),
+
                           SizedBox(
                             height: mediaquery.size.height * 0.02,
                           ),
@@ -295,36 +368,30 @@ class _AddProfileState extends State<AddProfile> {
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
                               Container(
-                                  height: mediaquery.size.height * 0.055,
-                                  width: mediaquery.size.width * 0.29,
-                                  child: AvailableTime(
-                                      onTap: () async {
-                                        final TimeOfDay? timeOfDay =
-                                            await showTimePicker(
-                                          context: context,
-                                          initialTime: fromtime,
-                                          initialEntryMode:
-                                              TimePickerEntryMode.input,
-                                        );
+                                height: mediaquery.size.height * 0.055,
+                                width: mediaquery.size.width * 0.29,
+                                child: AvailableTime(
+                                    onTap: () async {
+                                      final TimeOfDay? timeOfDay =
+                                          await showTimePicker(
+                                        context: context,
+                                        initialTime: fromtime,
+                                        initialEntryMode:
+                                            TimePickerEntryMode.input,
+                                      );
 
-                                        if (timeOfDay != null) {
-                                          setState(() {
-                                            fromtime = timeOfDay;
-                                          });
-                                        }
-                                        FocusScope.of(context)
-                                            .requestFocus(myFocusNode);
-                                      },
-                                      controller: _fromController,
-                                      value: (value) {
-                                        if (value == null || value.isEmpty) {
-                                          return 'Add time';
-                                        }
-
-                                        return null;
-                                      },
-                                      labeltext:
-                                          '${fromtime.hour % 12}:${fromtime.minute}')),
+                                      if (timeOfDay != null) {
+                                        setState(() {
+                                          fromtime = timeOfDay;
+                                        });
+                                      }
+                                      FocusScope.of(context)
+                                          .requestFocus(myFocusNode);
+                                    },
+                                    controller: _fromController,
+                                    labeltext:
+                                        '${fromtime.hour % 12}:${fromtime.minute}'),
+                              ),
                               Container(
                                   height: mediaquery.size.height * 0.055,
                                   width: mediaquery.size.width * 0.29,
@@ -347,13 +414,6 @@ class _AddProfileState extends State<AddProfile> {
                                           .requestFocus(myFocusNode);
                                     },
                                     controller: _toController,
-                                    value: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return 'Add time';
-                                      }
-
-                                      return null;
-                                    },
                                     labeltext:
                                         '${totime.hour % 12}:${totime.minute}',
                                   )),
@@ -392,7 +452,7 @@ class _AddProfileState extends State<AddProfile> {
                                 setState(() {
                                   final index = day % 7;
                                   values[index] = !values[index];
-                                  print(values);
+                                  availabledays = values;
                                 });
                               },
                               values: values,
@@ -425,7 +485,7 @@ class _AddProfileState extends State<AddProfile> {
                               fonrmtype: 'consultation fees',
                               formColor: Colormanager.whiteContainer,
                               textcolor: Colormanager.grayText,
-                              controller: _locationcontroler,
+                              controller: _feescontroller,
                               suficon: const Icon(
                                 Icons.currency_rupee_sharp,
                                 color: Colormanager.blackIcon,
@@ -473,7 +533,7 @@ class _AddProfileState extends State<AddProfile> {
                           Center(
                             child: Docimage(onFileChange: (changingImage) {
                               BlocProvider.of<DocimgBloc>(context)
-                                  .add(DocchageEvent(imageUrl: imageUrl));
+                                  .add(DocchageEvent(imageUrl: changingImage));
                             }),
                           ),
                           SizedBox(
@@ -482,11 +542,19 @@ class _AddProfileState extends State<AddProfile> {
 
                           GestureDetector(
                             onTap: () {
+                              if (imageUrl.isNotEmpty && docImageUrl.isEmpty) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content:
+                                        Text('Please upload your certificates'),
+                                  ),
+                                );
+                              }
+
                               if (imageUrl.isEmpty) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
-                                    content: Text(
-                                        'Failed to upload image. Please try again.'),
+                                    content: Text('please add profile photo'),
                                   ),
                                 );
                               }
@@ -496,13 +564,21 @@ class _AddProfileState extends State<AddProfile> {
                                 Navigator.of(context).pop();
                                 FocusScope.of(context).unfocus();
                                 final name = _nameController.text;
-                                final dob =
-                                    int.parse(_datofbirthController.text);
+                                final dob = _datofbirthController.text;
                                 final age = int.parse(_ageController.text);
-                                final gender = _gendercontroller.text;
+
                                 final location = _locationcontroler.text;
                                 final mbobilecontroller =
                                     int.parse(_mbobilecontroller.text);
+
+                                final experiance =
+                                    int.parse(_yearofexpeianceController.text);
+
+                                final fees = int.parse(_feescontroller.text);
+
+                                final hospital = _hospitalnameController.text;
+                                final about = _aboutnameController.text;
+
                                 if (imageUrl.isNotEmpty) {
                                   BlocProvider.of<AddUserBloc>(context)
                                       .add(AddUserClick(
@@ -510,10 +586,36 @@ class _AddProfileState extends State<AddProfile> {
                                     age: age,
                                     dob: dob,
                                     imageUrl: imageUrl,
-                                    gender: gender,
+                                    gender: genderselectedvalue!,
                                     location: location,
                                     mobile: mbobilecontroller,
+                                    availabledays: availabledays,
+                                    department: departmenetselectedvalue!,
+                                    experiance: experiance,
+                                    fees: fees,
+                                    form: fromtime.toString(),
+                                    to: totime.toString(),
+                                    hospitalNAme: hospital,
+                                    about: about,
+                                    certificates: docImageUrl,
                                   ));
+
+                                  // print("  name  :- ${name}");
+                                  // print(age);
+                                  // print(" dob:-  ${dob}");
+                                  // print(imageUrl);
+                                  // print("gender:- ${genderselectedvalue}");
+                                  // print(location);
+                                  // print(mbobilecontroller);
+                                  // print("availabeDays:-${availabledays}");
+                                  // print(" drdepartment:-  ${departmenetselectedvalue}");
+                                  // print("experiance:- ${experiance}");
+                                  // print(fees);
+                                  // print("from  ${fromtime}");
+                                  // print(" to ${totime}");
+                                  // print(hospital);
+                                  // print(about);
+                                  // print("docimage:- ${docImageUrl}");
                                 }
                                 _clearForm();
                                 Navigator.of(context).pushAndRemoveUntil(
@@ -521,6 +623,29 @@ class _AddProfileState extends State<AddProfile> {
                                         builder: (context) => Bottomnav()),
                                     (route) => false);
                               }
+
+                              // print(
+                              //     '---------------------------------------------------------------');
+
+                              // print(_nameController.text);
+                              // print(_ageController.text);
+                              // print(_datofbirthController.text);
+                              // print(imageUrl);
+                              // print(genderselectedvalue);
+                              // print(_locationcontroler.text);
+                              // print(_mbobilecontroller.text);
+                              // print(availabledays);
+                              // print(departmenetselectedvalue);
+                              // print(_yearofexpeianceController.text);
+                              // print(_feescontroller.text);
+                              // print(fromtime);
+                              // print(totime);
+                              // print(_hospitalnameController.text);
+                              // print(_aboutnameController.text);
+                              // print(docImageUrl);
+
+                              // print(
+                              //     '---------------------------------------------------------------');
                             },
                             child: Center(
                               child: Container(
@@ -563,14 +688,37 @@ class _AddProfileState extends State<AddProfile> {
     _gendercontroller.clear();
     _locationcontroler.clear();
     imageUrl = '';
+    docImageUrl = '';
   }
 
-  Future<void> _selectDAte() async {
+  Future<void> _selectDate() async {
     DateTime? _picked = await showDatePicker(
-        initialDate: DateTime.now(),
-        context: context,
-        firstDate: DateTime(2000),
-        lastDate: DateTime(2100));
+      initialDate: DateTime.now(),
+      context: context,
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: ThemeData.light().copyWith(
+            primaryColor: Colormanager.blueContainer,
+            colorScheme: ColorScheme.light(
+              primary: Colormanager.blueContainer,
+              onPrimary: Colors.white,
+              onSurface: const Color.fromARGB(255, 223, 223, 223),
+            ),
+            dialogBackgroundColor: const Color.fromARGB(255, 174, 174, 174),
+            textTheme: TextTheme(),
+            datePickerTheme: DatePickerThemeData(
+              backgroundColor: Colors.black,
+              headerBackgroundColor: Colors.grey,
+              headerForegroundColor: Colors.white,
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+
     if (_picked != null) {
       setState(() {
         _datofbirthController.text = _picked.toString().split(" ")[0];

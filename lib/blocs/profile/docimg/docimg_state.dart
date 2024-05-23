@@ -7,9 +7,9 @@ final class DocimgInitial extends DocimgState {}
 class DocAddingInitial extends DocimgState {}
 
 class DocSelectedState extends DocimgState {
-  final String imageUrl;
+  final String docimageUrl;
 
-  DocSelectedState({required this.imageUrl});
+  DocSelectedState({required this.docimageUrl});
 }
 
 class DocSelectedNotDone extends DocimgState {}

@@ -4,26 +4,23 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:media_doctor/utils/colors/colormanager.dart';
 
 class AvailableTime extends StatelessWidget {
-  final String? Function(String?) value;
+  
   final TextEditingController controller;
   final String labeltext;
   void Function()? onTap;
 
-   AvailableTime({super.key, required this.value, required this.controller,required this.labeltext,required this.onTap});
+   AvailableTime({super.key,  required this.controller,required this.labeltext,required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     FocusNode myFocusNode = FocusNode();
     return TextFormField(
-    
-      onTap: onTap, 
-
-       focusNode: myFocusNode,
-
-        
       
+    
+      onTap: onTap,
+       focusNode: myFocusNode,        
       autovalidateMode: AutovalidateMode.onUserInteraction,
-      validator: value,
+     
       controller: controller,
       
       decoration: InputDecoration(

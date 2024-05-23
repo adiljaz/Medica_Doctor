@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 
 import 'package:meta/meta.dart';
 
@@ -11,17 +12,13 @@ part 'add_user_event.dart';
 part 'add_user_state.dart';
 
 class AddUserBloc extends Bloc<AddUserEvent, AddUserState> {
-
-
-   final  FirebaseAuth  _auth =FirebaseAuth.instance;
-
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   AddUserBloc() : super(AddUserInitial()) {
     on<AddUserClick>((event, emit) async {
       emit(AddUserLOadingState());
-  String? uid  =   _auth.currentUser?.uid ;
+      String? uid = _auth.currentUser?.uid;
 
-  
       final result = await _addData(
         name: event.name,
         age: event.age,
@@ -29,7 +26,17 @@ class AddUserBloc extends Bloc<AddUserEvent, AddUserState> {
         gender: event.gender,
         imageUrl: event.imageUrl,
         location: event.location,
-        mobile: event.mobile, uid: uid,
+        mobile: event.mobile,
+        uid: uid,
+        certificates: event.certificates,
+        department: event.department,
+        experiance: event.experiance,
+        fees: event.fees,
+        form: event.form,
+        hospitalNAme: event.hospitalNAme,
+        to: event.to,
+        about: event.about,
+        availabledays: event.availabledays,
       );
 
       if (result) {
@@ -40,22 +47,27 @@ class AddUserBloc extends Bloc<AddUserEvent, AddUserState> {
     });
   }
 
-
   Future<bool> _addData({
     required String name,
     required int age,
     required String? imageUrl,
-    required int dob,
+    required String dob,
     required String gender,
     required String location,
     required String? uid,
     required int mobile,
+    required String department,
+    required int experiance,
+    required String form,
+    required String to,
+    List<bool>? availabledays,
+    required String hospitalNAme,
+    required int fees,
+    String? about,
+    required String certificates,
   }) async {
     final CollectionReference userCollection =
-        FirebaseFirestore.instance.collection('users');
-
-      
-      
+        FirebaseFirestore.instance.collection('doctor');
 
     final Map<String, dynamic> userData = {
       'name': name,
@@ -64,8 +76,17 @@ class AddUserBloc extends Bloc<AddUserEvent, AddUserState> {
       'dob': dob,
       'gender': gender,
       'location': location,
-      'uid':uid,
-      'mobile':mobile,
+      'uid': uid,
+      'mobile': mobile,
+      'department': department,
+      'experiance': experiance,
+      'form': form,
+      'to': to,
+      'availabledays': availabledays,
+      'hospitalNAme': hospitalNAme,
+      'fees': fees,
+      'about': about,
+      'certificates': certificates
     };
 
     try {

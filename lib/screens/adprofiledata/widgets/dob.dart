@@ -16,29 +16,20 @@ class DateofBirth extends StatelessWidget {
       required this.labeltext,
       required this.onTap});
 
-
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 20,right: 20),
+      padding: const EdgeInsets.only(left: 20, right: 20),
       child: TextFormField(
-
-      
-
-
-   
-      
         onTap: onTap,
         autovalidateMode: AutovalidateMode.onUserInteraction,
         validator: value,
         controller: controller,
-
-        
         decoration: InputDecoration(
-
-          prefixIcon: Icon(Icons.calendar_month),
+            prefixIcon: Icon(Icons.calendar_month),
             labelStyle: GoogleFonts.poppins(
-                textStyle: TextStyle(fontWeight: FontWeight.w500  ,color: Colormanager.grayText)), 
+                textStyle: TextStyle(
+                    fontWeight: FontWeight.w500, color: Colormanager.grayText)),
             labelText: labeltext,
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10.0),
@@ -50,7 +41,6 @@ class DateofBirth extends StatelessWidget {
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
               borderSide: BorderSide(
-              
                 color: Color.fromARGB(255, 220, 219, 219),
                 width: 0,
               ),
@@ -72,7 +62,6 @@ class DateofBirth extends StatelessWidget {
             fillColor: Colors.white,
             filled: true,
             border: OutlineInputBorder()),
-            
       ),
     );
   }

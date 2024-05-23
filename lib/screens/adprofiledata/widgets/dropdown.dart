@@ -3,43 +3,39 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:media_doctor/utils/colors/colormanager.dart';
 
-class Drobdown extends StatefulWidget {
+class Drobdown extends StatelessWidget {
   final List<String> genderItems;
 
   final String typeText;
+  final Function(String?)? onChange;
 
-  Drobdown({super.key, required this.genderItems,required this.typeText});
+  Drobdown(
+      {super.key,
+      required this.genderItems,
+      required this.typeText,
+      required this.onChange});
 
-  @override
-  State<Drobdown> createState() => _DrobdownState();
-}
-
-class _DrobdownState extends State<Drobdown> {
-  String? selectedValue;
+   String?selectedValue;
 
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField2<String>(
-
-      
-      
+       autovalidateMode: AutovalidateMode.onUserInteraction,
       isExpanded: true,
       decoration: InputDecoration(
         fillColor: Colors.white,
         filled: true,
         contentPadding: const EdgeInsets.symmetric(vertical: 16),
         border: OutlineInputBorder(
-            borderSide:BorderSide.none, 
+          borderSide: BorderSide.none,
           borderRadius: BorderRadius.circular(15),
-        
         ),
       ),
-      hint:  Text(
-        widget.typeText,
-        style: TextStyle(fontSize: 14,color: Colormanager.grayText),
-        
+      hint: Text(
+        typeText,
+        style: TextStyle(fontSize: 14, color: Colormanager.grayText),
       ),
-      items: widget.genderItems
+      items: genderItems
           .map((item) => DropdownMenuItem<String>(
                 value: item,
                 child: Text(
@@ -51,24 +47,14 @@ class _DrobdownState extends State<Drobdown> {
               ))
           .toList(),
       validator: (value) {
-        
         if (value == null) {
           return 'Please select gender';
         }
         return null;
       },
-      onChanged: (value) {
-
-        setState(() {
-          selectedValue=value;
-        });
-
-        print(selectedValue);
-        
-      },
+      onChanged: onChange,
       onSaved: (value) {
         selectedValue = value.toString();
-        
       },
       buttonStyleData: const ButtonStyleData(
         padding: EdgeInsets.only(right: 8),
