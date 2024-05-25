@@ -4,20 +4,26 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:media_doctor/blocs/bloc/location_bloc.dart';
-import 'package:media_doctor/blocs/bloc/location_event.dart';
-import 'package:media_doctor/blocs/bloc/location_state.dart';
+
 import 'package:media_doctor/blocs/profile/AddUser/add_user_bloc.dart';
 import 'package:media_doctor/blocs/profile/ImageAdding/image_adding_bloc.dart';
 import 'package:media_doctor/blocs/profile/docimg/docimg_bloc.dart';
+import 'package:media_doctor/screens/adprofiledata/widgets/about/about.dart';
+import 'package:media_doctor/screens/adprofiledata/widgets/age/age.dart';
 import 'package:media_doctor/screens/adprofiledata/widgets/dob.dart';
 import 'package:media_doctor/screens/adprofiledata/widgets/dropdown.dart';
+import 'package:media_doctor/screens/adprofiledata/widgets/experiance/experiance.dart';
+import 'package:media_doctor/screens/adprofiledata/widgets/fees/fees.dart';
+import 'package:media_doctor/screens/adprofiledata/widgets/hospital/hospital.dart';
+import 'package:media_doctor/screens/adprofiledata/widgets/location/location.dart';
+import 'package:media_doctor/screens/adprofiledata/widgets/name/name.dart';
+import 'package:media_doctor/screens/adprofiledata/widgets/number/number.dart';
+import 'package:media_doctor/screens/adprofiledata/widgets/profileImg/profileimg.dart';
 import 'package:media_doctor/screens/adprofiledata/widgets/time.dart';
 import 'package:media_doctor/screens/bottomnav/home.dart';
 import 'package:media_doctor/screens/profile/widget/certificates/docimage.dart';
-import 'package:media_doctor/screens/profile/widget/userimage.dart';
+
 import 'package:media_doctor/utils/colors/colormanager.dart';
-import 'package:media_doctor/widgets/profiletexfield/profiletetfield.dart';
 
 import 'package:weekday_selector/weekday_selector.dart';
 
@@ -50,7 +56,6 @@ class _AddProfileState extends State<AddProfile> {
 
   final TextEditingController _hospitalnameController = TextEditingController();
   final TextEditingController _feescontroller = TextEditingController();
-  
 
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
 
@@ -142,55 +147,17 @@ class _AddProfileState extends State<AddProfile> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Center(
-                            child: Stack(
-                              children: [
-                                Userimage(onFileChange: (changingImage) {
-                                  BlocProvider.of<ImageAddingBloc>(context)
-                                      .add(ImageChangedEvent(changingImage));
-                                }),
-                                Positioned(
-                                    top: 120,
-                                    left: 145,
-                                    child: Icon(
-                                      Icons.add_to_photos,
-                                      size: 40,
-                                    ))
-                              ],
-                            ),
+                            child: profileimg(),
                           ),
                           SizedBox(
                             height: mediaquery.size.height * 0.02,
                           ),
-                          ProfileTextFormField(
-                              keyboardtype: TextInputType.name,
-                              fonrmtype: 'Name ',
-                              formColor: Colormanager.whiteContainer,
-                              textcolor: Colormanager.grayText,
-                              controller: _nameController,
-                              value: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Add Name ';
-                                }
-
-                                return null;
-                              }),
+                          name(nameController: _nameController),
 
                           SizedBox(
                             height: mediaquery.size.height * 0.02,
                           ),
-                          ProfileTextFormField(
-                              keyboardtype: TextInputType.number,
-                              fonrmtype: 'Age ',
-                              formColor: Colormanager.whiteContainer,
-                              textcolor: Colormanager.grayText,
-                              controller: _ageController,
-                              value: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Add age ';
-                                }
-
-                                return null;
-                              }),
+                          Age(ageController: _ageController),
                           SizedBox(
                             height: mediaquery.size.height * 0.02,
                           ),
@@ -254,103 +221,18 @@ class _AddProfileState extends State<AddProfile> {
                           SizedBox(
                             height: mediaquery.size.height * 0.02,
                           ),
-                          ProfileTextFormField(
-                              keyboardtype: TextInputType.number,
-                              fonrmtype: 'Mobile Number ',
-                              formColor: Colormanager.whiteContainer,
-                              textcolor: Colormanager.grayText,
-                              controller: _mbobilecontroller,
-                              value: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Mobile Number ';
-                                }
-
-                                return null;
-                              }),
+                          MobileNumber(mbobilecontroller: _mbobilecontroller),
                           SizedBox(
                             height: mediaquery.size.height * 0.02,
                           ),
-                          BlocBuilder<LocationBlocBloc, LocationBlocState>(
-                            builder: (context, state) {
-                              if (state is LocationLoading) {
-                                return Center(
-                                    child: CircularProgressIndicator());
-                              }
-
-                              if (state is LocationLoaded) {
-                                _locationcontroler.text = state.address;
-
-                                return ProfileTextFormField(
-                                    keyboardtype: TextInputType.text,
-                                    fonrmtype: 'Location',
-                                    formColor: Colormanager.whiteContainer,
-                                    textcolor: Colormanager.grayText,
-                                    controller: _locationcontroler,
-                                    suficon: GestureDetector(
-                                      onTap: () {
-                                        BlocProvider.of<LocationBlocBloc>(
-                                                context)
-                                            .add(RequestCurrentPosition());
-                                      },
-                                      child: Icon(
-                                        Icons.location_on,
-                                        color: Color.fromARGB(255, 211, 14, 0),
-                                      ),
-                                    ),
-                                    value: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return 'Add Location';
-                                      }
-
-                                      return null;
-                                    });
-                              } else if (state is LocationError) {
-                                print(state.message);
-                                return Center(child: Text(state.message));
-                              }
-
-                              return ProfileTextFormField(
-                                  keyboardtype: TextInputType.text,
-                                  fonrmtype: 'Location',
-                                  formColor: Colormanager.whiteContainer,
-                                  textcolor: Colormanager.grayText,
-                                  controller: _locationcontroler,
-                                  suficon: GestureDetector(
-                                    onTap: () {
-                                      BlocProvider.of<LocationBlocBloc>(context)
-                                          .add(RequestCurrentPosition());
-                                    },
-                                    child: Icon(
-                                      Icons.location_on,
-                                      color: Color.fromARGB(255, 211, 14, 0),
-                                    ),
-                                  ),
-                                  value: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Add Location';
-                                    }
-
-                                    return null;
-                                  });
-                            },
-                          ),
+                          Location(locationcontroler: _locationcontroler),
 
                           SizedBox(
                             height: mediaquery.size.height * 0.02,
                           ),
-                          ProfileTextFormField(
-                              keyboardtype: TextInputType.number,
-                              fonrmtype: 'Year of Experiance',
-                              formColor: Colormanager.whiteContainer,
-                              textcolor: Colormanager.grayText,
-                              controller: _yearofexpeianceController,
-                              value: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Add Year of Experiance';
-                                }
-
-                                return null;
-                              }),
+                          Experiance(
+                              yearofexpeianceController:
+                                  _yearofexpeianceController),
                           SizedBox(
                             height: mediaquery.size.height * 0.02,
                           ),
@@ -463,60 +345,19 @@ class _AddProfileState extends State<AddProfile> {
                             height: mediaquery.size.height * 0.02,
                           ),
 
-                          ProfileTextFormField(
-                              keyboardtype: TextInputType.name,
-                              fonrmtype: ' Hospital Name ',
-                              formColor: Colormanager.whiteContainer,
-                              textcolor: Colormanager.grayText,
-                              controller: _hospitalnameController,
-                              value: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Add Hospital name';
-                                }
-
-                                return null;
-                              }),
+                          HospitalName(
+                              hospitalnameController: _hospitalnameController),
 
                           SizedBox(
                             height: mediaquery.size.height * 0.02,
                           ),
-                          ProfileTextFormField(
-                              keyboardtype: TextInputType.number,
-                              fonrmtype: 'consultation fees',
-                              formColor: Colormanager.whiteContainer,
-                              textcolor: Colormanager.grayText,
-                              controller: _feescontroller,
-                              suficon: const Icon(
-                                Icons.currency_rupee_sharp,
-                                color: Colormanager.blackIcon,
-                              ),
-                              value: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Add consultation fees';
-                                }
-
-                                return null;
-                              }),
+                          Fees(feescontroller: _feescontroller),
 
                           SizedBox(
                             height: mediaquery.size.height * 0.02,
                           ),
 
-                          ProfileTextFormField(
-                              minline: 10,
-                              maxline: 1,
-                              keyboardtype: TextInputType.name,
-                              fonrmtype: ' About',
-                              formColor: Colormanager.whiteContainer,
-                              textcolor: Colormanager.grayText,
-                              controller: _aboutnameController,
-                              value: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Add About';
-                                }
-
-                                return null;
-                              }),
+                          About(aboutnameController: _aboutnameController),
 
                           SizedBox(
                             height: mediaquery.size.height * 0.02,
