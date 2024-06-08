@@ -66,8 +66,8 @@ class AddUserBloc extends Bloc<AddUserEvent, AddUserState> {
     String? about,
     required String certificates,
   }) async {
-    final CollectionReference userCollection =
-        FirebaseFirestore.instance.collection('doctor');
+    // final CollectionReference userCollection =
+    //     FirebaseFirestore.instance.collection('doctor');
 
     final Map<String, dynamic> userData = {
       'name': name,
@@ -90,7 +90,8 @@ class AddUserBloc extends Bloc<AddUserEvent, AddUserState> {
     };
 
     try {
-      await userCollection.add(userData);
+      await FirebaseFirestore.instance.collection('doctor').doc(uid).set(userData);
+      // await userCollection.add(userData);
       print('Data added successfully!');
       return true; // Return true if data is added successfully
     } catch (error) {

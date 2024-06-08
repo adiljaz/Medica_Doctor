@@ -8,18 +8,24 @@ class Drobdown extends StatelessWidget {
 
   final String typeText;
   final Function(String?)? onChange;
+  final String ?initialvalue ;
+
 
   Drobdown(
       {super.key,
       required this.genderItems,
       required this.typeText,
-      required this.onChange});
+      required this.onChange,
+       this.initialvalue, 
+      });
 
    String?selectedValue;
 
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField2<String>(
+      value: initialvalue,
+    
        autovalidateMode: AutovalidateMode.onUserInteraction,
       isExpanded: true,
       decoration: InputDecoration(

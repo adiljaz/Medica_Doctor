@@ -4,10 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:media_doctor/blocs/profile/ImageUrl/image_url_bloc.dart';
 import 'package:media_doctor/blocs/profile/bloc/docurl_bloc.dart';
 
-import 'package:media_doctor/screens/profile/widget/approunderwidget.dart';
+import 'package:media_doctor/screens/adprofiledata/widgets/approunderwidget.dart';
 import 'package:path/path.dart' as p;
 import 'package:firebase_storage/firebase_storage.dart' as storage;
 import 'package:path_provider/path_provider.dart';
@@ -47,7 +46,7 @@ class _UserimageState extends State<Userimage> {
             InkWell(
               onTap: () => _selectPhoto(),
               child: Padding(
-                padding: EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(8.0),
                 child: Text(imageUrl != null ? 'Change Photo' : 'Select Photo'),
               ),
             )
@@ -66,16 +65,16 @@ class _UserimageState extends State<Userimage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              leading: Icon(Icons.camera),
-              title: Text('Camera'),
+              leading: const Icon(Icons.camera),
+              title: const Text('Camera'),
               onTap: () {
                 Navigator.pop(context);
                 _pickImage(ImageSource.camera);
               },
             ),
             ListTile(
-              leading: Icon(Icons.image),
-              title: Text('Gallery'),
+              leading: const Icon(Icons.image),
+              title: const Text('Gallery'),
               onTap: () {
                 Navigator.pop(context);
                 _pickImage(ImageSource.gallery);
@@ -96,7 +95,7 @@ class _UserimageState extends State<Userimage> {
 
     final croppedFile = await ImageCropper().cropImage(
       sourcePath: pickedFile.path,
-      aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
+      aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
     );
 
     if (croppedFile == null) {

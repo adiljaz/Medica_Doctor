@@ -1,8 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:media_doctor/blocs/bloc/location_event.dart';
-import 'package:media_doctor/blocs/bloc/location_state.dart';
+import 'package:media_doctor/blocs/location/location_event.dart';
+import 'package:media_doctor/blocs/location/location_state.dart';
 
 
 

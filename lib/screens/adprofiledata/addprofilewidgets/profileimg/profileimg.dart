@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:media_doctor/blocs/profile/ImageAdding/image_adding_bloc.dart';
-import 'package:media_doctor/screens/profile/widget/userimage.dart';
+import 'package:media_doctor/screens/adprofiledata/widgets/userimage.dart';
 
 class profileimg extends StatelessWidget {
   const profileimg({

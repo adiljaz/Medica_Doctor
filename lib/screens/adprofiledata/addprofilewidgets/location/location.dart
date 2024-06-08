@@ -2,9 +2,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:media_doctor/blocs/bloc/location_bloc.dart';
-import 'package:media_doctor/blocs/bloc/location_event.dart';
-import 'package:media_doctor/blocs/bloc/location_state.dart';
+import 'package:media_doctor/blocs/location/location_bloc.dart';
+import 'package:media_doctor/blocs/location/location_event.dart';
+import 'package:media_doctor/blocs/location/location_state.dart';
 import 'package:media_doctor/utils/colors/colormanager.dart';
 import 'package:media_doctor/widgets/profiletexfield/profiletetfield.dart';
 

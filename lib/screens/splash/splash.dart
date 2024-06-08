@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:media_doctor/blocs/auth/auth_bloc.dart';
 import 'package:media_doctor/screens/authentication/login/login.dart';
-import 'package:media_doctor/screens/bottomnav/home.dart';
+import 'package:media_doctor/screens/bottomnav/bottomnav.dart';
 import 'package:page_transition/page_transition.dart';
 
 class SplashScreen extends StatelessWidget {

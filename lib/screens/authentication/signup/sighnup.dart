@@ -7,7 +7,7 @@ import 'package:media_doctor/blocs/auth/auth_bloc.dart';
 import 'package:media_doctor/models/user_model.dart';
 import 'package:media_doctor/screens/adprofiledata/addrofile.dart';
 import 'package:media_doctor/screens/authentication/login/login.dart';
-import 'package:media_doctor/screens/bottomnav/home.dart';
+import 'package:media_doctor/screens/bottomnav/bottomnav.dart';
 import 'package:media_doctor/utils/colors/colormanager.dart';
 import 'package:media_doctor/widgets/textformfield/textformfield.dart';
 

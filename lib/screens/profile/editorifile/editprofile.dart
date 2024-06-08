@@ -1,7 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:media_doctor/blocs/dateofbirth/bloc/date_of_birth_bloc.dart';
@@ -22,11 +19,9 @@ import 'package:media_doctor/blocs/totime/bloc/to_event.dart';
 import 'package:media_doctor/blocs/totime/bloc/to_state.dart';
 import 'package:media_doctor/screens/adprofiledata/addprofilewidgets/about/about.dart';
 import 'package:media_doctor/screens/adprofiledata/addprofilewidgets/age/age.dart';
-import 'package:media_doctor/screens/adprofiledata/addprofilewidgets/department/department.dart';
 import 'package:media_doctor/screens/adprofiledata/widgets/dob.dart';
 import 'package:media_doctor/screens/adprofiledata/addprofilewidgets/experiance/experiance.dart';
 import 'package:media_doctor/screens/adprofiledata/addprofilewidgets/fees/fees.dart';
-import 'package:media_doctor/screens/adprofiledata/addprofilewidgets/gender/gender.dart';
 import 'package:media_doctor/screens/adprofiledata/addprofilewidgets/hospital/hospital.dart';
 import 'package:media_doctor/screens/adprofiledata/addprofilewidgets/location/location.dart';
 import 'package:media_doctor/screens/adprofiledata/addprofilewidgets/name/name.dart';
@@ -43,14 +38,48 @@ import 'package:media_doctor/utils/colors/colormanager.dart';
 import 'package:weekday_selector/weekday_selector.dart';
 
 // ignore: must_be_immutable
-class AddProfile extends StatefulWidget {
-  AddProfile({super.key});
+class EditProfile extends StatefulWidget {
+    EditProfile({
+    super.key,
+    required this.name,
+    required this.age,
+    required this.gender,
+    required this.department,
+    required this.dob,
+    required this.about,
+    required this.location,
+    required this.mobilenumber,
+    required this.imageUrl,
+    required this.docImageurl,
+    required this.fees,
+    required this.hospitalName,
+    required this.from,
+    required this.to,
+    required this.availabledays,
+    required this.experiace,
+  });
+  final String name;
+  final int age;
+  final String gender;
+  final String department;
+  final int experiace;
+  final String dob;
+  final String about;
+  final String location;
+  final int mobilenumber;
+  final String imageUrl;
+  final String docImageurl;
+  final int fees;
+  final String hospitalName;
+  final String from;
+  final String to;
+   List<bool> availabledays;
 
   @override
-  State<AddProfile> createState() => _AddProfileState();
+  State<EditProfile> createState() => _AddProfileState();
 }
 
-class _AddProfileState extends State<AddProfile> {
+class _AddProfileState extends State<EditProfile> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _ageController = TextEditingController();
   final TextEditingController _datofbirthController = TextEditingController();
@@ -59,14 +88,15 @@ class _AddProfileState extends State<AddProfile> {
   final TextEditingController _mbobilecontroller = TextEditingController();
   final TextEditingController _fromController = TextEditingController();
   final TextEditingController _toController = TextEditingController();
-  final TextEditingController _yearofexpeianceController = TextEditingController();
+  final TextEditingController _yearofexpeianceController =
+      TextEditingController();
   final TextEditingController _aboutnameController = TextEditingController();
   final TextEditingController _hospitalnameController = TextEditingController();
   final TextEditingController _feescontroller = TextEditingController();
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
   String imageUrl = '';
   String docImageUrl = '';
-  final values = List.filled(7, true);
+
   String? genderselectedvalue;
   String? departmenetselectedvalue;
   final List<String> genderItems = [
@@ -93,6 +123,28 @@ class _AddProfileState extends State<AddProfile> {
   TimeOfDay totime = TimeOfDay.now();
 
   @override
+  void initState() {
+    _nameController.text = widget.name;
+    _ageController.text = widget.age.toString();
+    _datofbirthController.text = widget.dob;
+    genderselectedvalue = widget.gender;
+    departmenetselectedvalue = widget.department;
+    _mbobilecontroller.text = widget.mobilenumber.toString();
+    _locationcontroler.text = widget.location;
+    _yearofexpeianceController.text = widget.experiace.toString();
+    _fromController.text = widget.from;
+    _toController.text = widget.to;
+    _hospitalnameController.text = widget.hospitalName;
+    _feescontroller.text = widget.fees.toString();
+    availabledays=widget.availabledays;
+
+    _aboutnameController.text = widget.about;
+    
+
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     MediaQueryData mediaquery = MediaQuery.of(context);
     return Scaffold(
@@ -100,7 +152,7 @@ class _AddProfileState extends State<AddProfile> {
       appBar: AppBar(
         backgroundColor: Colormanager.scaffold,
         title: Text(
-          'Add Profile',
+          'Edit Profile',
           style: TextStyle(),
         ),
         centerTitle: true,
@@ -123,13 +175,11 @@ class _AddProfileState extends State<AddProfile> {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text('Loading...')),
                     );
-                    _clearForm();
                   } else if (state is AddUserSuccesState) {
                     // Show success message
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text('User added successfully!')),
                     );
-                    _clearForm();
 
                     // Clear form and navigate away after success
 
@@ -200,53 +250,56 @@ class _AddProfileState extends State<AddProfile> {
                           //gender
 
                           Padding(
-                            padding:
-                                const EdgeInsets.only(left: 20, right: 20),
-                            child: BlocBuilder<GenderBloc, GenderState>(
-                              builder: (context, state) {
-                                if (state is GenderSelectedState) {
-                                  genderselectedvalue = state.selectedGender;
-                                }
-                                return Drobdown(
-                                  onChange: (value) {
-                                    if (value != null) {
-                                      BlocProvider.of<GenderBloc>(context)
-                                          .add(GenderSelected(value));
-                                    }
-                                  },
-                                  genderItems: genderItems,
-                                  typeText: 'Select Your Gender',
-                                );
-                              },
-                            )),
+                              padding:
+                                  const EdgeInsets.only(left: 20, right: 20),
+                              child: BlocBuilder<GenderBloc, GenderState>(
+                                builder: (context, state) {
+                                  if (state is GenderSelectedState) {
+                                    genderselectedvalue = state.selectedGender;
+                                  }
+                                  return Drobdown(
+                                    initialvalue:genderselectedvalue,
+
+                                    onChange: (value) {
+                                      if (value != null) {
+                                        BlocProvider.of<GenderBloc>(context)
+                                            .add(GenderSelected(value));
+                                      }
+                                    },
+                                    genderItems: genderItems,
+                                    typeText: 'Select Your Gender',
+                                  );
+                                },
+                              )),
 
                           SizedBox(
                             height: mediaquery.size.height * 0.02,
                           ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 20, right: 20),
-                          child: BlocBuilder<DepartmentBloc, DepartmentState>(
-                            builder: (context, state) {
-                              if (state is DepartmenetSelectedState) {
-                                departmenetselectedvalue =
-                                    state.selectedDepartment;
-                              }
+                          Padding(
+                            padding: const EdgeInsets.only(left: 20, right: 20),
+                            child: BlocBuilder<DepartmentBloc, DepartmentState>(
+                              builder: (context, state) {
+                                if (state is DepartmenetSelectedState) {
+                                  departmenetselectedvalue =
+                                      state.selectedDepartment;
+                                }
 
-                              return Drobdown(
-                                onChange: (value) {
-                                  if (value != null) {
-                                    BlocProvider.of<DepartmentBloc>(context)
-                                        .add(DepartmenetSelected(
-                                            selecteDepartment: value));
-                                  }
-                                  print(departmenetselectedvalue);
-                                },
-                                genderItems: departments,
-                                typeText: 'Select your Department',
-                              );
-                            },
+                                return Drobdown(
+                                  initialvalue: departmenetselectedvalue,
+                                  onChange: (value) {
+                                    if (value != null) {
+                                      BlocProvider.of<DepartmentBloc>(context)
+                                          .add(DepartmenetSelected(
+                                              selecteDepartment: value));
+                                    }
+                                    print(departmenetselectedvalue);
+                                  },
+                                  genderItems: departments,
+                                  typeText: 'Select your Department',
+                                );
+                              },
+                            ),
                           ),
-                        ),
 
                           SizedBox(
                             height: mediaquery.size.height * 0.02,
@@ -280,7 +333,7 @@ class _AddProfileState extends State<AddProfile> {
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
                               //ftomtime
-                              Container(
+                             Container(
                               height: mediaquery.size.height * 0.055,
                               width: mediaquery.size.width * 0.29,
                               child: BlocBuilder<FromTimeBloc, FromTimeState>(
@@ -318,7 +371,8 @@ class _AddProfileState extends State<AddProfile> {
                               ),
                             ),
 
-                              SizedBox(
+                              //totimewidget
+                             SizedBox(
                                 height: mediaquery.size.height * 0.055,
                                 width: mediaquery.size.width * 0.29,
                                 child: BlocBuilder<ToTimeBloc, ToTimeState>(
@@ -373,6 +427,7 @@ class _AddProfileState extends State<AddProfile> {
                           Padding(
                             padding: const EdgeInsets.only(left: 17, right: 17),
                             child: WeekdaySelector(
+                              
                               selectedTextStyle: TextStyle(
                                   fontWeight: FontWeight.bold, inherit: false),
                               shortWeekdays: const [
@@ -388,11 +443,11 @@ class _AddProfileState extends State<AddProfile> {
                               onChanged: (int day) {
                                 setState(() {
                                   final index = day % 7;
-                                  values[index] = !values[index];
-                                  availabledays = values;
+                                  widget.availabledays[index] = !widget.availabledays[index];
+                                 availabledays = widget.availabledays;
                                 });
                               },
-                              values: values,
+                              values: widget.availabledays ,
                             ),
                           ),
 
@@ -438,7 +493,6 @@ class _AddProfileState extends State<AddProfile> {
 
                           GestureDetector(
                             onTap: () {
-                              
                               if (imageUrl.isNotEmpty && docImageUrl.isEmpty) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
@@ -498,7 +552,7 @@ class _AddProfileState extends State<AddProfile> {
                                   ));
                                 }
 
-                                 print(name);
+                                print(name);
                                 print(age);
                                 print(dob);
                                 print(imageUrl);
@@ -514,16 +568,11 @@ class _AddProfileState extends State<AddProfile> {
                                 print(fromtime);
                                 print(totime);
 
-                               
-                                
-                                _clearForm();
                                 Navigator.of(context).pushAndRemoveUntil(
                                     MaterialPageRoute(
                                         builder: (context) => Bottomnav()),
                                     (route) => false);
                               }
-
-                              
                             },
                             child: Save(mediaquery: mediaquery),
                           ),
@@ -543,22 +592,12 @@ class _AddProfileState extends State<AddProfile> {
     );
   }
 
-  void _clearForm() {
-    _nameController.clear();
-    _ageController.clear();
-    _datofbirthController.clear();
-    _gendercontroller.clear();
-    _locationcontroler.clear();
-    imageUrl = '';
-    docImageUrl = '';
-  }
-
   Future<void> _selectDate() async {
     DateTime? _picked = await showDatePicker(
       initialDate: DateTime.now(),
       context: context,
       firstDate: DateTime(2000),
-      lastDate: DateTime.now(),
+      lastDate: DateTime(2100),
       builder: (BuildContext context, Widget? child) {
         return Theme(
           data: ThemeData.light().copyWith(

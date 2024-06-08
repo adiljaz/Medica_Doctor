@@ -4,7 +4,9 @@ import 'package:iconly/iconly.dart';
 import 'package:media_doctor/blocs/auth/auth_bloc.dart';
 import 'package:media_doctor/blocs/bottomnav/landing_state_bloc.dart';
 import 'package:media_doctor/screens/adprofiledata/addrofile.dart';
+import 'package:media_doctor/screens/appoinement/appoinement.dart';
 import 'package:media_doctor/screens/authentication/login/login.dart';
+import 'package:media_doctor/screens/profile/profile.dart';
 import 'package:media_doctor/utils/colors/colormanager.dart';
 
 class Bottomnav extends StatelessWidget {
@@ -13,13 +15,10 @@ class Bottomnav extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<Widget> bottomNavScren = <Widget>[
-      Text('oneeeeeeeee'),
+     Appointment(), 
       Text('Twooooooooooooooooo'),
       Text('threeeeeeeeeeeeeeeeeeeee'),
-
-      Text('threeeeeeeeeeeeeeeeeeeee'),
-
-      AddProfile(),
+      Profile(),
 
       //  Profile(),
     ];
@@ -28,18 +27,6 @@ class Bottomnav extends StatelessWidget {
       child: BlocBuilder<LandingStateBloc, LandingStateState>(
         builder: (context, state) {
           return Scaffold(
-            appBar: AppBar(
-              leading: IconButton(
-                  onPressed: () {
-                    final authBloc = BlocProvider.of<AuthBloc>(context);
-                    authBloc.add(LogoutEvent());
-
-                    Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(builder: (context) => LoginPage()),
-                        (route) => false);
-                  },
-                  icon: Icon(Icons.logout)),
-            ),
             backgroundColor: Colormanager.scaffold,
             // appBar: AppBar(
             //   actions: [
@@ -77,17 +64,6 @@ class Bottomnav extends StatelessWidget {
                   selectedIndex: state.tabindex,
                   destinations: const [
                     NavigationDestination(
-                      selectedIcon: Icon(
-                        IconlyBold.home,
-                        color: Colormanager.blueicon,
-                      ),
-                      icon: Icon(
-                        IconlyBold.home,
-                        color: Colormanager.blackIcon,
-                      ),
-                      label: 'Home',
-                    ),
-                    NavigationDestination(
                       icon: Badge(
                           child: Icon(
                         IconlyBold.calendar,
@@ -99,16 +75,6 @@ class Bottomnav extends StatelessWidget {
                       ),
                       label: 'Appoinment',
                     ),
-                    NavigationDestination(
-                        selectedIcon: Icon(
-                          IconlyBold.paper_negative,
-                          color: Colormanager.blueicon,
-                        ),
-                        icon: Icon(
-                          IconlyBold.paper_negative,
-                          color: Colormanager.blackIcon,
-                        ),
-                        label: 'News'),
                     NavigationDestination(
                       icon: Badge(
                         label: Text('2'),
@@ -122,6 +88,18 @@ class Bottomnav extends StatelessWidget {
                         color: Colormanager.blueicon,
                       ),
                       label: 'Message',
+                    ),
+                    NavigationDestination( 
+                      icon: Badge(
+                          child: Icon(
+                        IconlyBold.bookmark,
+                        color: Colormanager.blackIcon,
+                      )),
+                      selectedIcon: Icon(
+                        IconlyBold.bookmark,
+                        color: Colormanager.blueicon,
+                      ),
+                      label: 'Reviews',
                     ),
                     NavigationDestination(
                         selectedIcon: Icon(
