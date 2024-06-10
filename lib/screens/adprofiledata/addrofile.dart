@@ -80,9 +80,9 @@ class _AddProfileState extends State<AddProfile> {
     'Neurologists',
     'General',
     'Pediatrics',
-    ' nutritionist',
+    ' Nutrition',
     'ophthalmologist  ',
-    'Radiologist',
+    'Nephrology',
     'Urologist',
   ];
 
