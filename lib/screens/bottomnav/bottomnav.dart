@@ -6,6 +6,7 @@ import 'package:media_doctor/blocs/bottomnav/landing_state_bloc.dart';
 import 'package:media_doctor/screens/adprofiledata/addrofile.dart';
 import 'package:media_doctor/screens/appoinement/appoinement.dart';
 import 'package:media_doctor/screens/authentication/login/login.dart';
+import 'package:media_doctor/screens/message/message.dart';
 import 'package:media_doctor/screens/profile/profile.dart';
 import 'package:media_doctor/utils/colors/colormanager.dart';
 
@@ -17,11 +18,11 @@ class Bottomnav extends StatelessWidget {
     List<Widget> bottomNavScren = <Widget>[
      Appointment(), 
       Text('Twooooooooooooooooo'),
-      Text('threeeeeeeeeeeeeeeeeeeee'),
+    Message (), 
       Profile(),
 
       //  Profile(),
-    ];
+    ]; 
 
     return SafeArea(
       child: BlocBuilder<LandingStateBloc, LandingStateState>(

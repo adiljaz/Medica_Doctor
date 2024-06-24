@@ -3,7 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconly/iconly.dart';
+import 'package:media_doctor/screens/appoinement/bookdetails/bookdetails.dart';
 import 'package:media_doctor/utils/colors/colormanager.dart';
+import 'package:page_transition/page_transition.dart';
 
 class UpcomingAppointments extends StatelessWidget {
   const UpcomingAppointments({super.key});
@@ -45,6 +47,12 @@ class UpcomingAppointments extends StatelessWidget {
                           var age = doctor['age'];
                           var gender = doctor['gender'];
                           var disease = doctor['disease'];
+                          var problem = doctor['problem'];
+                          var selectedday =doctor ['selectedDay'];
+                          var selectedtimeslote = doctor['selectedTimeSlot'];
+                          var name = doctor['name'];
+
+                          var image = doctor['image'];
 
                           return Padding(
                             padding: const EdgeInsets.only(
@@ -54,7 +62,19 @@ class UpcomingAppointments extends StatelessWidget {
                                 // Navigator.of(context).push(PageTransition(child: , type: PageTransitionType.fade)),
                               },
                               child: GestureDetector(
-                                onTap: () {},
+                                onTap: () {
+                                  Navigator.of(context).push(PageTransition(
+                                      child: UserBooking(
+                                        image: image,
+                                        age: age,
+                                        disease: disease,
+                                        name: name.toString(),
+                                        problem: problem,
+                                        selectedday: selectedday.toString(),
+                                        timeslote: selectedtimeslote.toString(),
+                                      ),
+                                      type: PageTransitionType.fade));
+                                },
                                 child: Container(
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(15),
@@ -133,11 +153,11 @@ class UpcomingAppointments extends StatelessWidget {
                                                     ),
                                                   ),
                                                 ),
-                                            
                                               ),
-
-                                              SizedBox(height: mediaQuery.size.height*0.010,),
-
+                                              SizedBox(
+                                                height: mediaQuery.size.height *
+                                                    0.010,
+                                              ),
                                               Padding(
                                                 padding: const EdgeInsets.only(
                                                     left: 8),
@@ -168,7 +188,7 @@ class UpcomingAppointments extends StatelessWidget {
                                                 padding: const EdgeInsets.only(
                                                     left: 8),
                                                 child: Text(
-                                                  'Disease:-$disease', 
+                                                  'Disease:-$disease',
                                                   style: GoogleFonts.poppins(
                                                       color:
                                                           Colormanager.grayText,
