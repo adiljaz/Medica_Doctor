@@ -8,6 +8,7 @@ import 'package:media_doctor/screens/appoinement/appoinement.dart';
 import 'package:media_doctor/screens/authentication/login/login.dart';
 import 'package:media_doctor/screens/message/message.dart';
 import 'package:media_doctor/screens/profile/profile.dart';
+import 'package:media_doctor/screens/review/review.dart';
 import 'package:media_doctor/utils/colors/colormanager.dart';
 
 class Bottomnav extends StatelessWidget {
@@ -17,8 +18,11 @@ class Bottomnav extends StatelessWidget {
   Widget build(BuildContext context) {
     List<Widget> bottomNavScren = <Widget>[
      Appointment(), 
-      Text('Twooooooooooooooooo'),
-    Message (), 
+      Message (),    
+
+      
+     Review(),
+   
       Profile(),
 
       //  Profile(),
