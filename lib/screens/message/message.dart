@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:media_doctor/screens/message/chatpage.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
+import 'package:page_transition/page_transition.dart';
+import 'package:media_doctor/screens/message/chatpage.dart';
 
 class Message extends StatelessWidget {
-  Message({super.key});
+  Message({Key? key}) : super(key: key);
+
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -37,18 +38,18 @@ class Message extends StatelessWidget {
 
   Widget _buildDoctorList() {
     return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance.collection('users').snapshots(),
+      stream: _firestore.collection('users').snapshots(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
-        } 
+        }
 
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());
         }
 
         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-          return Center(child: Text('No doctors available'));
+          return Center(child: Text('No users available'));
         }
 
         return ListView(
@@ -74,10 +75,10 @@ class Message extends StatelessWidget {
             child: ChatPage(
               name: name,
               image: profile!,
-              receiveUserId: uid!, 
+              receiveUserId: uid!,
             ),
             type: PageTransitionType.fade,
-          )); 
+          ));
         },
         child: Container(
           decoration: BoxDecoration(
@@ -122,7 +123,7 @@ class Message extends StatelessWidget {
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             subtitle: StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance
+              stream: _firestore
                   .collection('chats')
                   .where('reciveUserid', isEqualTo: uid)
                   .orderBy('timestamp', descending: true)
@@ -135,7 +136,7 @@ class Message extends StatelessWidget {
 
                 DocumentSnapshot lastMessage = snapshot.data!.docs.first;
                 Map<String, dynamic> lastMessageData = lastMessage.data() as Map<String, dynamic>;
-                String message = lastMessageData['messages'] ?? 'No messages yet';
+                String message = lastMessageData['message'] ?? 'No messages yet';
 
                 return Text(
                   message,
@@ -159,4 +160,3 @@ class Message extends StatelessWidget {
     );
   }
 } 
- 
