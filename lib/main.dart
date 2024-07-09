@@ -17,6 +17,7 @@ import 'package:media_doctor/blocs/profile/ImageAdding/image_adding_bloc.dart';
 import 'package:media_doctor/blocs/profile/ImageUrl/image_url_bloc.dart';
 import 'package:media_doctor/blocs/profile/bloc/docurl_bloc.dart';
 import 'package:media_doctor/blocs/profile/docimg/docimg_bloc.dart';
+import 'package:media_doctor/blocs/savedoctor/savedoctor_bloc.dart';
 import 'package:media_doctor/blocs/totime/bloc/to_bloc.dart';
 import 'package:media_doctor/firebase_options.dart';
 import 'package:media_doctor/screens/splash/splash.dart';
@@ -101,7 +102,11 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => GoogleAuthBloc(),
           child: Container(),
-        )
+        ),
+        BlocProvider(
+          create: (context) => SaveDoctorBloc(),
+          child: Container(),
+        ),
         
       ],
       child: MaterialApp(
@@ -111,4 +116,4 @@ class MyApp extends StatelessWidget {
       ),
     );
   }
-}
+}    

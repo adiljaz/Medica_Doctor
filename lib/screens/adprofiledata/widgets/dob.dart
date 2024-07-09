@@ -24,7 +24,7 @@ class DateofBirth extends StatelessWidget {
         onTap: onTap,
         autovalidateMode: AutovalidateMode.onUserInteraction,
         validator: value,
-        controller: controller,
+        controller: controller, 
         decoration: InputDecoration(
             prefixIcon: Icon(Icons.calendar_month),
             labelStyle: GoogleFonts.poppins(

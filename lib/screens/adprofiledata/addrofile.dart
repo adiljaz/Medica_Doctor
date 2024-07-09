@@ -67,8 +67,9 @@ class _AddProfileState extends State<AddProfile> {
   String imageUrl = '';
   String docImageUrl = '';
   final values = List.filled(7, true);
-  String? genderselectedvalue;
   String? departmenetselectedvalue;
+  String? genderselectedvalue;
+  
   final List<String> genderItems = [
     'Male',
     'Female',
@@ -184,7 +185,7 @@ class _AddProfileState extends State<AddProfile> {
                                     controller: _datofbirthController,
                                     labeltext: 'Date of birth',
                                     onTap: () {
-                                      _selectDate();
+                                      _selectDate(context);
 
                                       FocusScope.of(context)
                                           .requestFocus(myFocusNode);
@@ -227,7 +228,7 @@ class _AddProfileState extends State<AddProfile> {
                           padding: const EdgeInsets.only(left: 20, right: 20),
                           child: BlocBuilder<DepartmentBloc, DepartmentState>(
                             builder: (context, state) {
-                              if (state is DepartmenetSelectedState) {
+                              if (state is DepartmenetSelectedState) { 
                                 departmenetselectedvalue =
                                     state.selectedDepartment;
                               }
@@ -553,38 +554,38 @@ class _AddProfileState extends State<AddProfile> {
     docImageUrl = '';
   }
 
-  Future<void> _selectDate() async {
-    DateTime? _picked = await showDatePicker(
-      initialDate: DateTime.now(),
-      context: context,
-      firstDate: DateTime(2000),
-      lastDate: DateTime.now(),
-      builder: (BuildContext context, Widget? child) {
-        return Theme(
-          data: ThemeData.light().copyWith(
-            primaryColor: Colormanager.blueContainer,
-            colorScheme: ColorScheme.light(
-              primary: Colormanager.blueContainer,
-              onPrimary: Colors.white,
-              onSurface: const Color.fromARGB(255, 223, 223, 223),
-            ),
-            dialogBackgroundColor: const Color.fromARGB(255, 174, 174, 174),
-            textTheme: TextTheme(),
-            datePickerTheme: DatePickerThemeData(
-              backgroundColor: Colors.black,
-              headerBackgroundColor: Colors.grey,
-              headerForegroundColor: Colors.white,
-            ),
+  Future<void> _selectDate(BuildContext context) async {
+  DateTime? _picked = await showDatePicker(
+    initialDate: DateTime.now(),
+    context: context,
+    firstDate: DateTime(2000),
+    lastDate: DateTime.now(),
+    builder: (BuildContext context, Widget? child) {
+      return Theme(
+        data: ThemeData.light().copyWith(
+          primaryColor: Colormanager.blueContainer,
+          colorScheme: ColorScheme.light(
+            primary: Colormanager.blueContainer,
+            onPrimary: Colors.white,
+            onSurface: const Color.fromARGB(255, 223, 223, 223),
           ),
-          child: child!,
-        );
-      },
-    );
-
-    if (_picked != null) {
-      context.read<DateOfBirthBloc>().add(DateOfBirthSelected(_picked));
-    }
+          dialogBackgroundColor: const Color.fromARGB(255, 174, 174, 174),
+          textTheme: TextTheme(),
+          datePickerTheme: DatePickerThemeData(
+            backgroundColor: Colors.black,
+            headerBackgroundColor: Colors.grey,
+            headerForegroundColor: Colors.white,
+          ),
+        ),
+        child: child!,
+      );
+    },
+  );
+  if (_picked != null) {
+    // Accessing the DateOfBirthBloc using BlocProvider.of
+    BlocProvider.of<DateOfBirthBloc>(context).add(DateOfBirthSelected(_picked));
   }
+}   
 
   String fromConvert(TimeOfDay fromtime) {
     final hours = fromtime.hourOfPeriod == 0 ? 12 : fromtime.hourOfPeriod;

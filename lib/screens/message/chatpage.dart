@@ -9,7 +9,6 @@ import 'package:media_doctor/blocs/chat/chat_bloc.dart';
 import 'package:media_doctor/blocs/chat/chat_event.dart';
 import 'package:media_doctor/blocs/chat/chat_state.dart';
 
-
 class ChatPage extends StatefulWidget {
   const ChatPage({
     Key? key,
@@ -38,7 +37,7 @@ class _ChatPageState extends State<ChatPage> {
     super.initState();
     _chatBloc = ChatBloc();
     _chatBloc.add(FetchMessagesEvent(widget.receiveUserId));
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       _scrollToBottom();
     });
   }
@@ -74,7 +73,7 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   void _scrollToBottom() {
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_scrollController.hasClients) {
         _scrollController.animateTo(
           _scrollController.position.maxScrollExtent,
@@ -177,7 +176,7 @@ class _ChatPageState extends State<ChatPage> {
                       var messageContent = data['message'];
                       var timestamp = data['timestamp'] as Timestamp?;
                       var messageTime = timestamp != null
-                          ? DateFormat('HH:mm').format(timestamp.toDate())
+                          ? DateFormat('h:mm a').format(timestamp.toDate())
                           : '';
 
                       return GestureDetector(
@@ -274,3 +273,4 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 }
+  

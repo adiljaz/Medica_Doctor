@@ -39,7 +39,7 @@ import 'package:weekday_selector/weekday_selector.dart';
 
 // ignore: must_be_immutable
 class EditProfile extends StatefulWidget {
-    EditProfile({
+  EditProfile({
     super.key,
     required this.name,
     required this.age,
@@ -73,7 +73,7 @@ class EditProfile extends StatefulWidget {
   final String hospitalName;
   final String from;
   final String to;
-   List<bool> availabledays;
+  List<bool> availabledays;
 
   @override
   State<EditProfile> createState() => _AddProfileState();
@@ -83,7 +83,7 @@ class _AddProfileState extends State<EditProfile> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _ageController = TextEditingController();
   final TextEditingController _datofbirthController = TextEditingController();
-  final TextEditingController _gendercontroller = TextEditingController();
+
   final TextEditingController _locationcontroler = TextEditingController();
   final TextEditingController _mbobilecontroller = TextEditingController();
   final TextEditingController _fromController = TextEditingController();
@@ -136,10 +136,9 @@ class _AddProfileState extends State<EditProfile> {
     _toController.text = widget.to;
     _hospitalnameController.text = widget.hospitalName;
     _feescontroller.text = widget.fees.toString();
-    availabledays=widget.availabledays;
+    availabledays = widget.availabledays;
 
     _aboutnameController.text = widget.about;
-    
 
     super.initState();
   }
@@ -258,8 +257,7 @@ class _AddProfileState extends State<EditProfile> {
                                     genderselectedvalue = state.selectedGender;
                                   }
                                   return Drobdown(
-                                    initialvalue:genderselectedvalue,
-
+                                    initialvalue: genderselectedvalue,
                                     onChange: (value) {
                                       if (value != null) {
                                         BlocProvider.of<GenderBloc>(context)
@@ -275,31 +273,30 @@ class _AddProfileState extends State<EditProfile> {
                           SizedBox(
                             height: mediaquery.size.height * 0.02,
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 20, right: 20),
-                            child: BlocBuilder<DepartmentBloc, DepartmentState>(
-                              builder: (context, state) {
-                                if (state is DepartmenetSelectedState) {
-                                  departmenetselectedvalue =
-                                      state.selectedDepartment;
-                                }
+                           Padding(
+                          padding: const EdgeInsets.only(left: 20, right: 20),
+                          child: BlocBuilder<DepartmentBloc, DepartmentState>(
+                            builder: (context, state) {
+                              if (state is DepartmenetSelectedState) { 
+                                departmenetselectedvalue =
+                                    state.selectedDepartment;
+                              }
 
-                                return Drobdown(
-                                  initialvalue: departmenetselectedvalue,
-                                  onChange: (value) {
-                                    if (value != null) {
-                                      BlocProvider.of<DepartmentBloc>(context)
-                                          .add(DepartmenetSelected(
-                                              selecteDepartment: value));
-                                    }
-                                    print(departmenetselectedvalue);
-                                  },
-                                  genderItems: departments,
-                                  typeText: 'Select your Department',
-                                );
-                              },
-                            ),
+                              return Drobdown(
+                                onChange: (value) {
+                                  if (value != null) {
+                                    BlocProvider.of<DepartmentBloc>(context)
+                                        .add(DepartmenetSelected(
+                                            selecteDepartment: value));
+                                  }
+                                  print(departmenetselectedvalue);
+                                },
+                                genderItems: departments,
+                                typeText: 'Select your Department',
+                              );
+                            },
                           ),
+                        ),
 
                           SizedBox(
                             height: mediaquery.size.height * 0.02,
@@ -333,81 +330,81 @@ class _AddProfileState extends State<EditProfile> {
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
                               //ftomtime
-                             Container(
-                              height: mediaquery.size.height * 0.055,
-                              width: mediaquery.size.width * 0.29,
-                              child: BlocBuilder<FromTimeBloc, FromTimeState>(
-                                builder: (context, state) {
-                                  if (state is FromTimeInitial) {
-                                    fromtime = state.time;
-                                  } else if (state is FromTimeUpdated) {
-                                    fromtime = state.time;
-                                  } else {
-                                    fromtime = TimeOfDay.now();
-                                  }
-                                  return AvailableTime(
-                                      onTap: () async {
-                                        final TimeOfDay? timeOfDay =
-                                            await showTimePicker(
-                                          context: context,
-                                          initialTime: fromtime,
-                                          initialEntryMode:
-                                              TimePickerEntryMode.input,
-                                        );
-
-                                        if (timeOfDay != null) {
-                                          BlocProvider.of<FromTimeBloc>(
-                                                  context)
-                                              .add(FromTimeSelected(
-                                                  timeOfDay));
-                                        }
-                                        FocusScope.of(context)
-                                            .requestFocus(myFocusNode); 
-                                      },
-                                      controller: _fromController,
-                                      labeltext:
-                                          '${fromtime.hour % 12}:${fromtime.minute}');
-                                },
-                              ),
-                            ),
-
-                              //totimewidget
-                             SizedBox(
+                              Container(
                                 height: mediaquery.size.height * 0.055,
                                 width: mediaquery.size.width * 0.29,
-                                child: BlocBuilder<ToTimeBloc, ToTimeState>(
+                                child: BlocBuilder<FromTimeBloc, FromTimeState>(
                                   builder: (context, state) {
-                                    if (state is ToTimeInitial) {
-                                      totime = state.time;
-                                    } else if (state is ToTimeUpdated) {
-                                      totime = state.time;
+                                    if (state is FromTimeInitial) {
+                                      fromtime = state.time;
+                                    } else if (state is FromTimeUpdated) {
+                                      fromtime = state.time;
                                     } else {
-                                      totime = TimeOfDay.now();
+                                      fromtime = TimeOfDay.now();
                                     }
-
                                     return AvailableTime(
-                                      onTap: () async {
-                                        final TimeOfDay? timeOfDay =
-                                            await showTimePicker(
-                                          context: context,
-                                          initialTime: totime,
-                                          initialEntryMode:
-                                              TimePickerEntryMode.input,
-                                        );
+                                        onTap: () async {
+                                          final TimeOfDay? timeOfDay =
+                                              await showTimePicker(
+                                            context: context,
+                                            initialTime: fromtime,
+                                            initialEntryMode:
+                                                TimePickerEntryMode.input,
+                                          );
 
-                                        if (timeOfDay != null) {
-                                          BlocProvider.of<ToTimeBloc>(context)
-                                              .add(ToTimeSelected(timeOfDay));
-                                        }
-                                        FocusScope.of(context)
-                                            .requestFocus(myFocusNode);
-                                      },
-                                      controller: _toController,
-                                      labeltext:
-                                          '${totime.hour % 12}:${totime.minute}',
-                                    );
+                                          if (timeOfDay != null) {
+                                            BlocProvider.of<FromTimeBloc>(
+                                                    context)
+                                                .add(FromTimeSelected(
+                                                    timeOfDay));
+                                          }
+                                          FocusScope.of(context)
+                                              .requestFocus(myFocusNode);
+                                        },
+                                        controller: _fromController,
+                                        labeltext:
+                                            '${fromtime.hour % 12}:${fromtime.minute}');
                                   },
-                                )),
+                                ),
+                              ),
+
+                              //totimewidget
+                              SizedBox(
+                                  height: mediaquery.size.height * 0.055,
+                                  width: mediaquery.size.width * 0.29,
+                                  child: BlocBuilder<ToTimeBloc, ToTimeState>(
+                                    builder: (context, state) {
+                                      if (state is ToTimeInitial) {
+                                        totime = state.time;
+                                      } else if (state is ToTimeUpdated) {
+                                        totime = state.time;
+                                      } else {
+                                        totime = TimeOfDay.now();
+                                      }
+
+                                      return AvailableTime(
+                                        onTap: () async {
+                                          final TimeOfDay? timeOfDay =
+                                              await showTimePicker(
+                                            context: context,
+                                            initialTime: totime,
+                                            initialEntryMode:
+                                                TimePickerEntryMode.input,
+                                          );
+
+                                          if (timeOfDay != null) {
+                                            BlocProvider.of<ToTimeBloc>(context)
+                                                .add(ToTimeSelected(timeOfDay));
+                                          }
+                                          FocusScope.of(context)
+                                              .requestFocus(myFocusNode);
+                                        },
+                                        controller: _toController,
+                                        labeltext:
+                                            '${totime.hour % 12}:${totime.minute}',
+                                      );
+                                    },
+                                  )),
                             ],
                           ),
 
@@ -427,7 +424,6 @@ class _AddProfileState extends State<EditProfile> {
                           Padding(
                             padding: const EdgeInsets.only(left: 17, right: 17),
                             child: WeekdaySelector(
-                              
                               selectedTextStyle: TextStyle(
                                   fontWeight: FontWeight.bold, inherit: false),
                               shortWeekdays: const [
@@ -443,11 +439,12 @@ class _AddProfileState extends State<EditProfile> {
                               onChanged: (int day) {
                                 setState(() {
                                   final index = day % 7;
-                                  widget.availabledays[index] = !widget.availabledays[index];
-                                 availabledays = widget.availabledays;
+                                  widget.availabledays[index] =
+                                      !widget.availabledays[index];
+                                  availabledays = widget.availabledays;
                                 });
                               },
-                              values: widget.availabledays ,
+                              values: widget.availabledays,
                             ),
                           ),
 
@@ -597,7 +594,7 @@ class _AddProfileState extends State<EditProfile> {
       initialDate: DateTime.now(),
       context: context,
       firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
+      lastDate: DateTime.now(),
       builder: (BuildContext context, Widget? child) {
         return Theme(
           data: ThemeData.light().copyWith(
