@@ -9,7 +9,7 @@ import 'package:page_transition/page_transition.dart';
 
 class UpcomingAppointments extends StatelessWidget {
   const UpcomingAppointments({Key? key}) : super(key: key);
-
+ 
   @override
   Widget build(BuildContext context) { 
     MediaQueryData mediaQuery = MediaQuery.of(context);
@@ -18,7 +18,7 @@ class UpcomingAppointments extends StatelessWidget {
     final id = _auth.currentUser!.uid;
 
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: Colors.grey[100], 
       body: StreamBuilder(
         stream: doctor.doc(id).collection('dailyBookings').snapshots(),
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -47,7 +47,7 @@ class UpcomingAppointments extends StatelessWidget {
   }
 
   Widget _buildAppointmentCard(BuildContext context,
-      DocumentSnapshot appointment, MediaQueryData mediaQuery) {
+      DocumentSnapshot appointment, MediaQueryData mediaQuery) { 
     final name = appointment['name'] ?? 'N/A';
     final age = appointment['age'] ?? 'N/A';
     final gender = appointment['gender'] ?? 'N/A';
@@ -158,17 +158,38 @@ class UpcomingAppointments extends StatelessWidget {
               ),
               Divider(),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   GestureDetector(
-                    onTap: () => _showCancellationConfirmation(context, appointment),
+                    onTap: () => _showCompletionConfirmation(context, appointment),
                     child: Container(
                       width: mediaQuery.size.width * 0.4,
                       height: mediaQuery.size.height * 0.05,
                       decoration: BoxDecoration(
-                        border: Border.all(color: Colormanager.blueContainer),
-                        color: const Color.fromARGB(255, 255, 255, 255),
+                        color: Colormanager.blueContainer,
                         borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Center(
+                        child: Text(
+                          'Mark as Completed',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () => _showCancelConfirmation(context, appointment),
+                    child: Container(
+                      width: mediaQuery.size.width * 0.4,
+                      height: mediaQuery.size.height * 0.05,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: Colors.red),
                       ),
                       child: Center(
                         child: Text(
@@ -176,26 +197,8 @@ class UpcomingAppointments extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w600,
-                            color: Colormanager.blueContainer,
+                            color: Colors.red,
                           ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    width: mediaQuery.size.width * 0.4,
-                    height: mediaQuery.size.height * 0.05,
-                    decoration: BoxDecoration(
-                      color: Colormanager.blueContainer,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Center(
-                      child: Text(
-                        'Completed',
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
                         ),
                       ),
                     ),
@@ -209,7 +212,62 @@ class UpcomingAppointments extends StatelessWidget {
     );
   }
 
-  void _showCancellationConfirmation(BuildContext context, DocumentSnapshot appointment) {
+  void _showCompletionConfirmation(BuildContext context, DocumentSnapshot appointment) {
+    showModalBottomSheet(
+      context: context,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (BuildContext context) {
+        return Container(
+          padding: EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Mark Appointment as Completed',
+                style: GoogleFonts.poppins(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 20),
+              Text(
+                'Are you sure you want to mark this appointment as completed?',
+                style: GoogleFonts.poppins(fontSize: 16),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: Text('Back'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.grey,
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      _markAppointmentAsCompleted(context, appointment);
+                    },
+                    child: Text('Yes, Complete', style: TextStyle(color: Colors.white)),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colormanager.blueContainer,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _showCancelConfirmation(BuildContext context, DocumentSnapshot appointment) {
     showModalBottomSheet(
       context: context,
       shape: RoundedRectangleBorder(
@@ -240,10 +298,9 @@ class UpcomingAppointments extends StatelessWidget {
                 children: [
                   ElevatedButton(
                     onPressed: () => Navigator.pop(context),
-                    child: Text('  Back  ',),
+                    child: Text('Back'),
                     style: ElevatedButton.styleFrom(
-                      
-                      backgroundColor:  Colors.grey, 
+                      backgroundColor: Colors.grey,
                     ),
                   ),
                   ElevatedButton(
@@ -251,9 +308,9 @@ class UpcomingAppointments extends StatelessWidget {
                       Navigator.pop(context);
                       _cancelAppointment(context, appointment);
                     },
-                    child: Text('Yes, Cancel',style: TextStyle(color: Colors.white),),
+                    child: Text('Yes, Cancel', style: TextStyle(color: Colors.white)),
                     style: ElevatedButton.styleFrom(
-                    backgroundColor:  Colormanager.blueContainer,
+                      backgroundColor: Colors.red,
                     ),
                   ),
                 ],
@@ -265,11 +322,10 @@ class UpcomingAppointments extends StatelessWidget {
     );
   }
 
-  void _cancelAppointment(
-      BuildContext context, DocumentSnapshot appointment) async {
+  void _markAppointmentAsCompleted(BuildContext context, DocumentSnapshot appointment) async {
     final doctorId = FirebaseAuth.instance.currentUser!.uid;
     final appointmentId = appointment.id;
- 
+
     try {
       WriteBatch batch = FirebaseFirestore.instance.batch();
 
@@ -279,35 +335,71 @@ class UpcomingAppointments extends StatelessWidget {
           .collection('dailyBookings')
           .doc(appointmentId);
 
-      DocumentReference canceledRef = FirebaseFirestore.instance
-          .collection('userbooking')  
+      DocumentReference completedRef = FirebaseFirestore.instance
+          .collection('doctor')
           .doc(doctorId)
-          .collection('canceledAppointments')
+          .collection('completedAppointments')
+          .doc(appointmentId);
+
+      DocumentReference userCompletedRef = FirebaseFirestore.instance
+          .collection('users')
+          .doc(appointment['uid'])  
+          .collection('completedAppointments')
           .doc(appointmentId);
 
       batch.delete(doctorBookingRef);
 
-      Map<String, dynamic> canceledAppointmentData = {
+      Map<String, dynamic> completedAppointmentData = {
         ...appointment.data() as Map<String, dynamic>,
-        'canceledAt': FieldValue.serverTimestamp(),
-        'doctorId': doctorId,
+        'completedAt': FieldValue.serverTimestamp(),
       };
 
-      canceledAppointmentData.remove('userId');
-      canceledAppointmentData.remove('uid');
-
-      batch.set(canceledRef, canceledAppointmentData);
+      batch.set(completedRef, completedAppointmentData);
+      batch.set(userCompletedRef, completedAppointmentData);
 
       await batch.commit();
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Appointment canceled successfully')), 
+        SnackBar(content: Text('Appointment marked as completed')),
       );
     } catch (error) {
-      print('Error canceling appointment: $error');
+      print('Error marking appointment as completed: $error');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content: Text('Failed to cancel appointment. Please try again.')),
+        SnackBar(content: Text('Failed to mark appointment as completed. Please try again.')),
+      );
+    }
+  }
+
+  void _cancelAppointment(BuildContext context, DocumentSnapshot appointment) async {
+    final doctorId = FirebaseAuth.instance.currentUser!.uid;
+    final appointmentId = appointment.id;
+    final userId = appointment['uid'];
+
+    try {
+      WriteBatch batch = FirebaseFirestore.instance.batch();
+
+      DocumentReference doctorBookingRef = FirebaseFirestore.instance
+          .collection('doctor')
+          .doc(doctorId)
+          .collection('dailyBookings')
+          .doc(appointmentId);
+
+      DocumentReference userBookingRef = FirebaseFirestore.instance
+          .collection('userbooking')
+          .doc(appointmentId);
+
+      batch.delete(doctorBookingRef);
+      batch.delete(userBookingRef);
+
+      await batch.commit();
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Appointment cancelled successfully')),
+      );
+    } catch (error) {
+      print('Error cancelling appointment: $error');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to cancel appointment. Please try again.')),
       );
     }
   }
@@ -329,7 +421,7 @@ class UpcomingAppointments extends StatelessWidget {
     );
   }
 
-  String _formatDate(String dateString) {
+  String _formatDate(String dateString) { 
     try {
       final date = DateTime.parse(dateString);
       return DateFormat('MMM d, yyyy').format(date);

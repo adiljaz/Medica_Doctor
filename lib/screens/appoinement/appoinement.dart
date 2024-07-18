@@ -50,13 +50,14 @@ class Appointment extends StatelessWidget {
               ),
             
             ],
-          ),
+          ), 
         ),
-        body: TabBarView(
+        body: TabBarView( 
           children: [
 
              UpcomingAppointments(),
-            CompletedAppointments(),
+ 
+            CompletedAppointments(),  
            
             CanceledAppointments(),
           ],

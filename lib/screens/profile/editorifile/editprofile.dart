@@ -27,8 +27,6 @@ import 'package:media_doctor/screens/adprofiledata/addprofilewidgets/location/lo
 import 'package:media_doctor/screens/adprofiledata/addprofilewidgets/name/name.dart';
 import 'package:media_doctor/screens/adprofiledata/addprofilewidgets/number/number.dart';
 import 'package:media_doctor/screens/adprofiledata/addprofilewidgets/profileimg/profileimg.dart';
-import 'package:media_doctor/screens/adprofiledata/addprofilewidgets/totime/totime.dart';
-import 'package:media_doctor/screens/adprofiledata/addprofilewidgets/fromtime/fromtime.dart';
 import 'package:media_doctor/screens/adprofiledata/addprofilewidgets/save/save.dart';
 import 'package:media_doctor/screens/adprofiledata/widgets/dropdown.dart';
 import 'package:media_doctor/screens/adprofiledata/widgets/time%20copy.dart';
